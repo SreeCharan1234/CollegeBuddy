@@ -35,7 +35,7 @@ global s
 k=0
 
 genai.configure(api_key=os.getenv("API-KEY"))
-t=[ "Python", "Java", "C++", "JavaScript", "Ruby", "PHP", "Swift", "Kotlin", 
+t= "Python", "Java", "C++", "JavaScript", "Ruby", "PHP", "Swift", "Kotlin", 
     "C#", "Go", "R", "TypeScript", "Scala", "Perl", "Objective-C", "Dart", 
     "Rust", "Haskell", "MATLAB", "SQL", "HTML/CSS", "React", "Angular", "Vue.js", 
     "Node.js", "Django", "Flask", "Spring", "ASP.NET", "Ruby on Rails"]
