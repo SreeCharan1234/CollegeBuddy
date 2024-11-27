@@ -10,7 +10,6 @@ from src.mcqgenerator.utils import read_file, get_table_data
 from src.mcqgenerator.logger import logging
 import streamlit as st
 from src.mcqgenerator.MCQGenerator import generate_evaluate_chain
-import playsound
 from streamlit_ace import st_ace
 from PIL import Image
 import base64
