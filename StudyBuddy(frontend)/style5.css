@@ -1,0 +1,134 @@
+@font-face {
+    font-family: Hamar Font;
+    src: url(Assets/Zuume-ExtraBold.ttf);
+}
+
+@font-face {
+    font-family: Product Sans;
+    src: url(Fonts/Product\ Sans\ Regular.ttf);
+}
+
+
+
+.lft{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    width: 40%;
+    height: 100vh;
+    gap: 5vh;
+    padding-left: 10vw;
+    background-color: #111;
+    border-top-left-radius: 100px;
+    /* border-bottom-left-radius: 100px; */
+}
+
+.lft h1 {
+    font-size: 10vw;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-image: url(https://i.gifer.com/Ax9R.gif);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    line-height: 15vh;
+    font-family: 'Hamar Font';
+}
+
+.lft p{
+    width: 25vw;
+    color: #fff;
+    font-size: 1.2vw;
+}
+
+.btn{
+    display: flex;
+    gap: 2vw;
+}
+
+.btn button{
+    padding: 1.2vw 2vw;
+    border-radius: 10px;
+    border: none;
+    font-size: 1vw;
+}
+
+.btn button:nth-child(1){
+    background-color: greenyellow;
+}
+
+.rght{
+    width: 60%;
+    height: 100vh;
+    display: flex;
+    align-items: end;
+    margin-left: 40%;
+    margin-top: -100vh;
+    justify-content: center;
+    background-color: #111;
+    border-top-right-radius: 100px;
+    /* border-bottom-right-radius: 100px; */
+}
+
+.rght video{
+    width: 90%;
+    margin-bottom: 10%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 500px) {
+    .ri-menu-3-line{
+        display: initial;
+    }
+    .cntr-nav{
+        display: none;
+    }
+    .rght-nav{
+        display: none;
+    }
+    .lft-nav a img{
+        width: 25vw;
+    }
+    #main{
+        flex-direction: column;
+    }
+    .lft{
+        align-items: center;
+        width: 100%;
+        padding-left: 0vw;
+    }
+    .lft h1{
+        margin-top: 15vh;
+        font-size: 30vw;
+    }
+    .lft p{
+        width: 85vw;
+        font-size: 6vw;
+    }
+    .btn{
+        flex-direction: column;
+        gap: 2vh;
+    }
+    .btn button{
+        font-size: 4.5vw;
+        padding: 5vw 15vw;
+    }
+    .rght{
+        width: 100%;
+        height: 50vh;
+    }
+}
