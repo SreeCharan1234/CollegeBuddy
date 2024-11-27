@@ -39,6 +39,7 @@ faiss-cpu
 langchain_google_genai 
 pdf2image
 poppler-utils
+calplot
 streamlit_lottie
 spacy
 langchain-community
