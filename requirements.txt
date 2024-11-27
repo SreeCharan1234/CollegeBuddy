@@ -47,7 +47,7 @@ numpy
 pandas
 Requests
 requests_html
-
+playsound
 streamlit-webrtc
 aiortc
 flask
