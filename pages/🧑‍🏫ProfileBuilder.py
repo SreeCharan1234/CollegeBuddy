@@ -143,68 +143,16 @@ def load_lottieurl(url: str):
         if r.status_code != 200:
             return None
         return r.json() 
-def recognize_speech_from_microphone():
-    with sr.Microphone() as source:
-        st.write("Listening...")
-        audio = recognizer.listen(source)
-        try:
-            text = recognizer.recognize_google(audio)
-            st.success(f"You said: {text}")
-            return text
-        except sr.UnknownValueError:
-            st.error("Google Speech Recognition could not understand audio")
-        except sr.RequestError as e:
-            st.error(f"Could not request results from Google Speech Recognition service; {e}")
-def to_markdown(text):
-  text = text.replace('•', '  *')
-  return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
-def pseudo_bold(text):
-    bold_text = ''.join(chr(0x1D5D4 + ord(c) - ord('A')) if 'A' <= c <= 'Z' else
-                        chr(0x1D5EE + ord(c) - ord('a')) if 'a' <= c <= 'z' else c
-                        for c in text)
-    return bold_text
 def streamlit_menu(example=1):
     if example == 1:
         with st.sidebar:
             selected = option_menu(
                 menu_title="Profile - Builder ",  # required
-                options=["Dashboard","Resume Builder", "ATS Detector", "LinkedIn Profile","Mail/Cover Letter"],  # required
+                options=["Dashboard","Resume Builder", "ATS Detector", "LinkedIn Profile","Your Progress"],  # required
                 icons=["bi bi-person-lines-fill","bi bi-file-person", "bi bi-binoculars-fill", "bi bi-linkedin","bi bi-envelope-at"],  # optional
                 menu_icon="cast",  # optional
                  
                 default_index=0,
-            )
-        return selected
-    if example == 2:
-        with st.sidebar:
-            selected = option_menu(
-                menu_title="Main Menu",  # required
-                options=["Road Map", "Resume Builder", "Ai bot","ATS-DECTOR"],  # required
-                icons=["geo-alt-fill", "file-person-fill", "robot"],  # optional
-                menu_icon="cast",  # optional
-                default_index=0,
-            )
-        return selected
-    if example == 3:
-        with st.sidebar:
-            selected = option_menu(
-                menu_title="Main Menu",  # required
-                options=["Road Map", "Resume Builder", "Ai bot","ATS-DECTOR"],  # required
-                icons=["geo-alt-fill", "file-person-fill", "robot"],  # optional
-                menu_icon="cast",  # optional
-                default_index=0,                
-                # optional
-            )
-        return selected
-    if example == 4:
-        with st.sidebar:
-            selected = option_menu(
-                menu_title="Main Menu",  # required
-                options=["Road Map", "Resume Builder", "Ai bot","ATS-DECTOR"],  # required
-                icons=["geo-alt-fill", "file-person-fill", "robot"],  # optional
-                menu_icon="cast",  # optional
-                default_index=0,                
-                # optional
             )
         return selected
 def create_rating_dropdown(label):
@@ -1178,7 +1126,7 @@ if selected == "LinkedIn Profile":
                             
         with st.container(border=True):
             pass           
-if selected == "Mail/Cover Letter":
+if selected == "Your Progress":
             link="https://lottie.host/c2f561ff-c620-47ef-81ae-1c2316627a6f/KnRJZhxv5D.json"
             l=load_lottieurl(link)
             col1, col2 = st.columns([1.3,9])  # Create two columns
