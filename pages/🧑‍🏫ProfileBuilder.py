@@ -34,6 +34,7 @@ import plotly.express as px
 
 global s
 k=0
+api_key=os.getenv("API-KEY")
 genai.configure(api_key=os.getenv("API-KEY"))
 t=[ "Python", "Java", "C++", "JavaScript", "Ruby", "PHP", "Swift", "Kotlin", 
     "C#", "Go", "R", "TypeScript", "Scala", "Perl", "Objective-C", "Dart", 
@@ -869,7 +870,7 @@ if selected == "LinkedIn Profile":
             # Display selected job role
         with col2:
             # Video upload
-            st.video(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\data\Recording 2024-08-03 001234.mp4")
+            st.video(r"Recording 2024-08-03 001234.mp4")
 
 
 
