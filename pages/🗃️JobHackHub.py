@@ -23,7 +23,7 @@ from streamlit_extras.echo_expander import echo_expander
 from bs4 import BeautifulSoup
 global s
 k=0
-st.set_page_config(page_title="Profile Builder", page_icon='chart_with_upwards_trend', layout="wide", initial_sidebar_state="auto", menu_items=None)
+st.set_page_config(page_title="KnowledgeBuilder", page_icon='src/Logo College.png', layout="wide", initial_sidebar_state="auto", menu_items=None)
 EXAMPLE_NO = 1
 recognizer = sr.Recognizer()
 def get_gemini_response(question):
