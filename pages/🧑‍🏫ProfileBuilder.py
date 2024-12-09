@@ -40,35 +40,9 @@ t=[ "Python", "Java", "C++", "JavaScript", "Ruby", "PHP", "Swift", "Kotlin",
     "C#", "Go", "R", "TypeScript", "Scala", "Perl", "Objective-C", "Dart", 
     "Rust", "Haskell", "MATLAB", "SQL", "HTML/CSS", "React", "Angular", "Vue.js", 
     "Node.js", "Django", "Flask", "Spring", "ASP.NET", "Ruby on Rails"]
-st.set_page_config(page_title="Resume", page_icon='chart_with_upwards_trend', layout="wide", initial_sidebar_state="auto", menu_items=None)
 EXAMPLE_NO = 1
 recognizer = sr.Recognizer()
-current_dir = Path(__file__).parent if "__file__" in locals() else Path.cwd()
-css_file = current_dir / "styles" / "main.css"
-resume_file = current_dir / "assets" / "CV.pdf"
-profile_pic = current_dir / "assets" / "profile-pic.png"
-PAGE_TITLE = "Digital CV | K Sree Charan"
-NAME = "K Sree Charan"
-DESCRIPTION = """
-Senior Data Analyst, assisting enterprises by supporting data-driven decision-making.
-"""
-EMAIL = "Sreecharan9484@gmail.com"
-SOCIAL_MEDIA = {
-     "CGPA": "https://www.youtube.com/channel/UCPxjJHozO16AfjRV6_bGxew",
-     "LinkedIn": "https://www.linkedin.com/in/sree9484/",
-     "GitHub": "https://github.com/SreeCharan1234",
-     "PhoneNO": "9958389484",
-    }
-PROJECTS = {
-     "🏆 Sales Dashboard - Comparing sales across three stores": "https://youtu.be/Sb0A9i6d320",
-     "🏆 Income and Expense Tracker - Web app with NoSQL database": "https://youtu.be/3egaMfE9388",
-     "🏆 Desktop Application - Excel2CSV converter with user settings & menubar": "https://youtu.be/LzCfNanQ_9c",
-     "🏆 MyToolBelt - Custom MS Excel add-in to combine Python & Excel": "https://pythonandvba.com/mytoolbelt/",
-}
-with open(css_file) as f:
-            st.markdown("<style>{}</style>".format(f.read()), unsafe_allow_html=True)
-with open(resume_file, "rb") as pdf_file:
-            PDFbyte = pdf_file.read()
+
 def get_leetcode_data(username):
     url = "https://leetcode.com/graphql"
     query = """
@@ -148,8 +122,8 @@ def streamlit_menu(example=1):
         with st.sidebar:
             selected = option_menu(
                 menu_title="Profile - Builder ",  # required
-                options=["Dashboard","Resume Builder", "ATS Detector", "LinkedIn Profile","Your Progress"],  # required
-                icons=["bi bi-person-lines-fill","bi bi-file-person", "bi bi-binoculars-fill", "bi bi-linkedin","bi bi-envelope-at"],  # optional
+                options=["Dashboard", "ATS Detector", "LinkedIn Profile","Your Progress"],  # required
+                icons=["bi bi-person-lines-fill", "bi bi-binoculars-fill", "bi bi-linkedin","bi bi-envelope-at"],  # optional
                 menu_icon="cast",  # optional
                  
                 default_index=0,
@@ -162,7 +136,7 @@ selected = streamlit_menu(example=EXAMPLE_NO)
 if 'questions' not in st.session_state:
     st.session_state.questions = []
 if selected == "Dashboard":
-    
+
     link="https://lottie.host/02515adf-e5f1-41c8-ab4f-8d07af1dcfb8/30KYw8Ui2q.json"
     Username = "Sreecharan9484"
     cUsername="Sreecharan9484"
@@ -509,230 +483,6 @@ if selected == "Dashboard":
         
     else:
         st.write("## Write Your UserName")
-if selected == "Resume Builder":
-    
-    link="https://lottie.host/2fb5087d-7339-4354-8aae-e3434084d3dc/m39YcukvGP.json"
-    l=load_lottieurl(link)
-    
-    col1, col2 = st.columns([1.3,9])  # Create two columns
-    with col1:
-        st.lottie(l, height=100, width=100)
-    with col2:
-        st.header(f":rainbow[Resume Builder]👧👦", divider='rainbow')
-    with st.container(border=True):
-        st.header("Personal Information")
-        col1, col2 = st.columns(2)
-        with col1:
-            first_name = st.text_input("First Name")
-            EMAIL = st.text_input("Email")
-            phone = st.text_input("Phone Number")
-            github=st.text_input("Github profile")
-        SOCIAL_MEDIA['GitHub']=github
-        with col2:
-            last_name = st.text_input("Last Name")
-            address = st.text_input("Address")
-            linkedin_url = st.text_input("LinkedIn Profile URL")
-            CGPA=st.text_input("CPGA : ")
-        SOCIAL_MEDIA['LinkedIn']=linkedin_url
-        SOCIAL_MEDIA['PhoneNO']=phone
-        SOCIAL_MEDIA['CGPA']=phone
-            
-        NAME=first_name+last_name
-        
-        summary = st.text_area("Summary")
-        if summary and ("//" in summary):
-            summary="breif desprion of a student for his resume like this format "+"and it should be very short that is only line only 5-7 words this the little bit information about the student"+summary
-            summary=get_gemini_response(summary)
-    with st.container(border=True):
-        st.header("Employment History")
-        job_title = st.text_input("Job Title")
-        
-        col3, col4 = st.columns(2)
-        
-        with col3:
-            job_start_date = st.date_input("Start Date", datetime.date.today())
-            job_city = st.text_input("City")
-        
-        with col4:
-            job_end_date = st.date_input("End Date",datetime.date.today())
-            company_name = st.text_input("Company Name")
-        
-        job_description = st.text_area("Job Description")
-    with st.container(border=True):
-        st.header("Projects")
-        
-        projects= st.text_input("Name of the project")
-        col8 , clo9 =st.columns(2)
-        with col8:
-            edu_start_date = st.date_input("Start_Date", datetime.date.today())
-            
-        with clo9:
-            edu_end_date = st.date_input("completed ", datetime.date.today())
-        project_explain = st.text_area("Explain your Project :  ") 
-    with st.container(border=True):
-        st.header("Education")
-        school = st.text_input("School")
-        degree = st.text_input("Degree")
-        
-        col5, col6 = st.columns(2)
-        
-        with col5:
-            edu_start_date = st.date_input("StartDate", datetime.date.today())
-            edu_city = st.text_input("City.")
-        
-        with col6:
-            edu_end_date = st.date_input("End-Date", datetime.date.today())
-            major = st.text_input("Major")
-            
-        
-    with st.container(border=True):
-        st.header("Skills")
-        skill1 = st.selectbox("Skill 1", ["None","Python", "JavaScript", "SQL", "Java", "C++"])
-        skill1_rating = create_rating_dropdown("Rating for Skill 1")
-        
-        skill2 = st.selectbox("Skill 2", ["None","Python", "JavaScript", "SQL", "Java", "C++"])
-        skill2_rating = create_rating_dropdown("Rating for Skill 2")
-        
-        skill3 = st.selectbox("Skill 3", ["None","Python", "JavaScript", "SQL", "Java", "C++"])
-        skill3_rating = create_rating_dropdown("Rating for Skill 3")
-    with st.container(border=True):
-        a,b,c=st.columns(3)
-        profile_pic1 = Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\r1.jpg")
-        profile_pic4 = Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\r4.jpg")
-        with a:
-            
-            st.image(profile_pic1, width=230)
-            st.button("TEMPLATE 1")
-            st.image(profile_pic4, width=230)
-            st.button("TEMPLATE 4 ")
-            
-
-        with b:
-            profile_pic2 = Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\r2.jpg")
-            profile_pic5 = Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\r3.jpg")
-            
-            st.image(profile_pic4, width=230)
-            st.button("TEMPLATE 2")
-            st.image(profile_pic5, width=230)
-            st.button("TEMPLATE 5")
-
-        with c:
-            #profile_pic = Image.open(profile_pic)
-            profile_pic3 = Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\r3.jpg")
-            profile_pic6 = Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\r1.jpg")
-            st.image(profile_pic3, width=230)
-            st.button("TEMPLATE 3")
-            st.image(profile_pic6, width=230)
-            st.button("TEMPLATE 6")
-
-        
-    if st.button("Submit"):
-        
-# --- PATH SETTINGS ---
-        
-        
-
-
-        # --- HERO SECTION ---
-        col1, col2 = st.columns(2, gap="small")
-        with col1:
-
-            st.image(Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\profile-pic.png" ), width=230)
-
-        with col2:
-            st.title(NAME)
-            st.write(summary)
-            st.download_button(
-                label=" 📄 Download Resume",
-                data=PDFbyte,
-                file_name=resume_file.name,
-                mime="application/octet-stream",
-            )
-            st.write("📫", EMAIL)
-
-
-        # --- SOCIAL LINKS ---
-        st.write('\n')
-        cols = st.columns(len(SOCIAL_MEDIA))
-        for index, (platform, link) in enumerate(SOCIAL_MEDIA.items()):
-            cols[index].write(f"[{platform}]({link})")
-
-
-
-
-
-        st.success("Resume data submitted successfully!")
-        st.write('\n')
-        st.subheader("Experience & Qualification")
-        st.write(
-            """
-        - ✔️ 7 Years expereince extracting actionable insights from data
-        - ✔️ Strong hands on experience and knowledge in Python and Excel
-        - ✔️ Good understanding of statistical principles and their respective applications
-        - ✔️ Excellent team-player and displaying strong sense of initiative on tasks
-        """
-        )
-
-
-        # --- SKILLS ---
-        st.write('\n')
-        st.subheader("Hard Skills")
-        st.write(
-            """
-        - 👩‍💻 Programming: Python (Scikit-learn, Pandas), SQL, VBA
-        - 📊 Data Visulization: PowerBi, MS Excel, Plotly
-        - 📚 Modeling: Logistic regression, linear regression, decition trees
-        - 🗄️ Databases: Postgres, MongoDB, MySQL
-        """
-        )
-
-
-        # --- WORK HISTORY ---
-        st.write('\n')
-        st.subheader("Work History")
-        st.write("---")
-
-        # --- JOB 1
-        st.write("🚧", "**Senior Data Analyst | Ross Industries**")
-        st.write("02/2020 - Present")
-        st.write(
-            """
-        - ► Used PowerBI and SQL to redeﬁne and track KPIs surrounding marketing initiatives, and supplied recommendations to boost landing page conversion rate by 38%
-        - ► Led a team of 4 analysts to brainstorm potential marketing and sales improvements, and implemented A/B tests to generate 15% more client leads
-        - ► Redesigned data model through iterations that improved predictions by 12%
-        """
-        )
-
-        # --- JOB 2
-        st.write('\n')
-        st.write("🚧", "**Data Analyst | Liberty Mutual Insurance**")
-        st.write("01/2018 - 02/2022")
-        st.write(
-            """
-        - ► Built data models and maps to generate meaningful insights from customer data, boosting successful sales eﬀorts by 12%
-        - ► Modeled targets likely to renew, and presented analysis to leadership, which led to a YoY revenue increase of $300K
-        - ► Compiled, studied, and inferred large amounts of data, modeling information to drive auto policy pricing
-        """
-        )
-
-        # --- JOB 3
-        st.write('\n')
-        st.write("🚧", "**Data Analyst | Chegg**")
-        st.write("04/2015 - 01/2018")
-        st.write(
-            """
-        - ► Devised KPIs using SQL across company website in collaboration with cross-functional teams to achieve a 120% jump in organic traﬃc
-        - ► Analyzed, documented, and reported user survey results to improve customer communication processes by 18%
-        - ► Collaborated with analyst team to oversee end-to-end process surrounding customers' return data
-        """
-        )
-
-
-        # --- Projects & Accomplishments ---
-        st.write('\n')
-        st.subheader("Projects & Accomplishments")
-        st.write("sdfs")
-        st.write("---")
 if selected == "ATS Detector":
     
     def input_pdf_setup(uploaded_file):
