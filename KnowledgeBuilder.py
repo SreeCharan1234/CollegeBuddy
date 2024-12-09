@@ -82,6 +82,13 @@ interview_topics = [
     "Soft skills (communication, teamwork, leadership)"
 ]
 st.set_page_config(page_title="KnowledgeBuilder", page_icon='src/Logo College.png', layout="wide", initial_sidebar_state="auto", menu_items=None)
+if "current_theme" not in st.session_state:
+    st.session_state.current_theme = "light"
+current_dir = Path(__file__).parent if "__file__" in locals() else Path.cwd()
+css_file = current_dir / "src" / "main.css"
+with open(css_file) as f:
+    st.markdown("<style>{}</style>".format(f.read()), unsafe_allow_html=True)
+
 st.markdown("""
 <style>
 #MainMenu {visibility: hidden;}
