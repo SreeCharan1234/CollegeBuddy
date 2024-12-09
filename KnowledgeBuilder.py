@@ -33,7 +33,6 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import time
 global s
 k=0
-k=0
 genai.configure(api_key=os.getenv("API-KEY"))
 t= ["Python", "Java", "C++", "JavaScript", "Ruby", "PHP", "Swift", "Kotlin", 
     "C#", "Go", "R", "TypeScript", "Scala", "Perl", "Objective-C", "Dart", 
