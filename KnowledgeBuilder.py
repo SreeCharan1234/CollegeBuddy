@@ -81,7 +81,13 @@ interview_topics = [
     "Open-source contributions",
     "Soft skills (communication, teamwork, leadership)"
 ]
-st.set_page_config(page_title="KnowledgeBuilder", page_icon='chart_with_upwards_trend', layout="wide", initial_sidebar_state="auto", menu_items=None)
+st.set_page_config(page_title="KnowledgeBuilder", page_icon='src/Logo College.png', layout="wide", initial_sidebar_state="auto", menu_items=None)
+st.markdown("""
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}    
+</style>
+""", unsafe_allow_html=True)
 EXAMPLE_NO = 1
 is_listening = False
 recognizer = sr.Recognizer()
@@ -172,7 +178,7 @@ def streamlit_menu(example=1):
             selected = option_menu(
                 
                 menu_title="Knowledge Builder🧠",  # required
-                options=["Road Map","Code Editor","Mock Interview","AI Bot"],  # required
+                options=["Road Map","Mock Interview","Code Editor"],  # required
                 icons=["geo-alt-fill","bi bi-code-slash","bi bi-camera-video-fill","robot"],  # optional
                 menu_icon="cast",  # optional
                 default_index=0,
@@ -455,28 +461,6 @@ if selected == "Road Map":
             
             s=get_gemini_response(s)
             st.write(s)
-if selected == "AI Bot":
-    print("Hello, I'm agent AI Bot")
-    link="https://lottie.host/364beff7-b5bc-459e-ac28-d26cfa0dfece/FLsJPwNGdK.json"
-    l=load_lottieurl(link)
-    example()
-    col1, col2 = st.columns([2,9])  # Create two columns
-    with col1:
-        st.lottie(l, height=150, width=150)
-    with col2:
-        st.header(f"AIBot", divider='rainbow')
-    if "messages" not in st.session_state:
-        st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
-
-    for msg in st.session_state.messages:
-        st.chat_message(msg["role"]).write(msg["content"])
-
-    if prompt := st.chat_input():
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        st.chat_message("user").write(prompt)
-        msg=get_gemini_response(prompt+"if ")
-        st.session_state.messages.append({"role": "assistant", "content": msg})
-        st.chat_message("assistant").write(msg)        
 if selected=="Code Editor": 
     print("Hello, I'm agent Code Editor")
     link="https://lottie.host/d6e55231-a53c-4d19-a142-d71320fcd9a7/hbFKIhu1KA.json"

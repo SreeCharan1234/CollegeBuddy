@@ -65,7 +65,6 @@ PROJECTS = {
      "🏆 Desktop Application - Excel2CSV converter with user settings & menubar": "https://youtu.be/LzCfNanQ_9c",
      "🏆 MyToolBelt - Custom MS Excel add-in to combine Python & Excel": "https://pythonandvba.com/mytoolbelt/",
 }
-
 with open(css_file) as f:
             st.markdown("<style>{}</style>".format(f.read()), unsafe_allow_html=True)
 with open(resume_file, "rb") as pdf_file:
@@ -163,10 +162,10 @@ selected = streamlit_menu(example=EXAMPLE_NO)
 if 'questions' not in st.session_state:
     st.session_state.questions = []
 if selected == "Dashboard":
-    print("Hello, I'm agent Dashbord")
+    
     link="https://lottie.host/02515adf-e5f1-41c8-ab4f-8d07af1dcfb8/30KYw8Ui2q.json"
-    Username = st.sidebar.text_input("Username LeetCode",placeholder="Write your user name")
-    cUsername=st.sidebar.text_input("Username CodeChef",placeholder="Write your user name")
+    Username = "Sreecharan9484"
+    cUsername="Sreecharan9484"
     st.session_state["Username"] = Username
     st.session_state["cUsername"]= cUsername
     l=load_lottieurl(link)
@@ -511,7 +510,7 @@ if selected == "Dashboard":
     else:
         st.write("## Write Your UserName")
 if selected == "Resume Builder":
-    print("Hello, I'm agent Resume Builder")
+    
     link="https://lottie.host/2fb5087d-7339-4354-8aae-e3434084d3dc/m39YcukvGP.json"
     l=load_lottieurl(link)
     
@@ -735,7 +734,7 @@ if selected == "Resume Builder":
         st.write("sdfs")
         st.write("---")
 if selected == "ATS Detector":
-    print("Hello, I'm agent ATS Detector")
+    
     def input_pdf_setup(uploaded_file):
         if uploaded_file is not None:
             ## Convert the PDF to image
@@ -816,7 +815,7 @@ if selected == "ATS Detector":
             else:
                 st.write("Please uplaod the resume")
 if selected == "LinkedIn Profile":
-    print("Hello, I'm agent LinkedIn Profile")
+    
     def extract_text_from_pdf(file):
         pdf_reader = PyPDF2.PdfReader(file)
         text = ""
