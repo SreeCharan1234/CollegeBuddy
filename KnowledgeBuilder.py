@@ -163,13 +163,13 @@ def to_markdown(text):
   return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
 def get_transcript(video_url):
 
-  # Extract the video ID from the URL
+  
   video_id = video_url.split("=")[1]
 
-  # Create an instance of YouTubeTranscriptApi
+  
   transcript_api = YouTubeTranscriptApi()
 
-  # Get the transcript data
+  
   transcript = transcript_api.get_transcript(video_id)
 
   return transcript
@@ -287,6 +287,8 @@ def main():
                 tone = "Simple"
                 button = st.form_submit_button("Create MCQs")
 
+            if video_link:
+                video_link=get_transcript(video_link)
             if button and uploaded_file is not None and mcq_count and subject and tone:
                 with st.spinner("loading..."):
                     try:
@@ -346,6 +348,36 @@ def main():
                                     st.error(f"Error processing quiz data: {str(e)}")
                             else:
                                 st.error("No valid quiz data found")
+            if button and video_link :
+                with st.spinner("loading..."):
+                    try:
+                        
+                        response = generate_evaluate_chain({
+                            "text": video_link,
+                            "number": mcq_count,
+                            "subject": subject,
+                            "tone": tone,
+                            "response_json": json.dumps(RESPONSE_JSON)
+                        })
+                    
+                    except Exception as e:
+                        traceback.print_exception(type(e), e, e.__traceback__)
+                        st.error(e)
+                    else:
+                        if isinstance(response, dict):
+                            quiz_json_start = response['quiz'].find('{')
+                            quiz_json_end = response['quiz'].rfind('}') + 1
+                            quiz_json = response['quiz'][quiz_json_start:quiz_json_end]
+                            if quiz_json:
+                                try:
+                                    processed_quiz_data = process_quiz_data(quiz_json)
+                                    st.session_state.quiz_data = processed_quiz_data
+                                    st.session_state.review = response.get("review", "")
+                                except Exception as e:
+                                    st.error(f"Error processing quiz data: {str(e)}")
+                            else:
+                                st.error("No valid quiz data found")
+                  
         with col2:
             with st.container(border=True):
                 webrtc_streamer(key="sample") 
