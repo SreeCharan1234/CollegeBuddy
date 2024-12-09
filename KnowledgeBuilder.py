@@ -228,7 +228,6 @@ def main():
         st.lottie(l, height=100, width=100)
     with col2:
         st.header(f":rainbow[Mock Interview]💻💻", divider='rainbow')
-    # Initialize session state for quiz data and user answers
     if 'quiz_data' not in st.session_state:
         st.session_state.quiz_data = None
     if 'user_answers' not in st.session_state:
@@ -291,7 +290,37 @@ def main():
             if button and uploaded_file is not None and mcq_count and subject and tone:
                 with st.spinner("loading..."):
                     try:
-                        text = read_file(uploaded_file)
+
+                        text2 = read_file(uploaded_file)
+                        response = generate_evaluate_chain({
+                            "text": text2,
+                            "number": mcq_count,
+                            "subject": subject,
+                            "tone": tone,
+                            "response_json": json.dumps(RESPONSE_JSON)
+                        })
+
+                    except Exception as e:
+                        traceback.print_exception(type(e), e, e.__traceback__)
+                        st.error(e)
+                    else:
+                        if isinstance(response, dict):
+                            quiz_json_start = response['quiz'].find('{')
+                            quiz_json_end = response['quiz'].rfind('}') + 1
+                            quiz_json = response['quiz'][quiz_json_start:quiz_json_end]
+                            if quiz_json:
+                                try:
+                                    processed_quiz_data = process_quiz_data(quiz_json)
+                                    st.session_state.quiz_data = processed_quiz_data
+                                    st.session_state.review = response.get("review", "")
+                                except Exception as e:
+                                    st.error(f"Error processing quiz data: {str(e)}")
+                            else:
+                                st.error("No valid quiz data found")
+            if button and text :
+                with st.spinner("loading..."):
+                    try:
+                        
                         response = generate_evaluate_chain({
                             "text": text,
                             "number": mcq_count,
@@ -299,7 +328,7 @@ def main():
                             "tone": tone,
                             "response_json": json.dumps(RESPONSE_JSON)
                         })
-
+                    
                     except Exception as e:
                         traceback.print_exception(type(e), e, e.__traceback__)
                         st.error(e)
@@ -339,10 +368,10 @@ def main():
                         for opt_key, opt_value in question['options'].items()]
                 
                 # Add an initial empty option to prevent default selection
-                options = ['Select an option'] + options
+                options =  options
                 
                 selected_option = st.radio(
-                    f"Select your answer for question {i+1}:",
+                    f"select an option ",
                     options,
                     key=f"q_{i}",
                     index=0  # Set default to first option (Select an option)
@@ -382,13 +411,6 @@ def main():
             
             st.markdown("---")
         
-        # if st.button("Start New Quiz"):
-        #     st.session_state.quiz_data = None
-        #     st.session_state.user_answers = {}
-        #     st.session_state.quiz_submitted = False
-        #     st.session_state.score = 0
-        #     st.session_state.show_error = False
-        #     st.experimental_rerun()
         def reset_quiz():
             st.session_state.quiz_data = None
             st.session_state.user_answers = {}
@@ -405,8 +427,6 @@ selected = streamlit_menu(example=EXAMPLE_NO)
 if 'questions' not in st.session_state:
     st.session_state.questions = []
 if selected == "Road Map":
-
-    print("Hello, I'm agent Road Map")
     example2()
     link="https://lottie.host/76509b4e-81b1-4877-9974-1fa506b294b1/ja7bfvhaEb.json"
     l=load_lottieurl(link)
@@ -468,7 +488,7 @@ if selected == "Road Map":
             s=get_gemini_response(s)
             st.write(s)
 if selected=="Code Editor": 
-    print("Hello, I'm agent Code Editor")
+    
     link="https://lottie.host/d6e55231-a53c-4d19-a142-d71320fcd9a7/hbFKIhu1KA.json"
     l=load_lottieurl(link)
     col1, col2 = st.columns([1,9])  # Create two columns
