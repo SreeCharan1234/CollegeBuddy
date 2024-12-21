@@ -185,3 +185,39 @@
 [2024-12-09 15:00:00,391] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
 [2024-12-09 15:00:00,499] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
 [2024-12-09 15:00:00,500] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-09 15:22:56,567] 103 streamlit_webrtc.webrtc - INFO - Track audio received
+[2024-12-09 15:22:56,567] 148 streamlit_webrtc.webrtc - INFO - Add a track <aiortc.rtcrtpreceiver.RemoteStreamTrack object at 0x0000023723A4F5C0> of kind audio to <aiortc.rtcpeerconnection.RTCPeerConnection object at 0x000002370D2150A0>
+[2024-12-09 15:22:56,568] 103 streamlit_webrtc.webrtc - INFO - Track video received
+[2024-12-09 15:22:56,569] 148 streamlit_webrtc.webrtc - INFO - Add a track <aiortc.rtcrtpreceiver.RemoteStreamTrack object at 0x0000023723A4F830> of kind video to <aiortc.rtcpeerconnection.RTCPeerConnection object at 0x000002370D2150A0>
+[2024-12-09 15:22:56,594] 1114 aioice.ice - INFO - Connection(0) Could not bind to 169.254.211.164 - [WinError 10049] The requested address is not valid in its context
+[2024-12-09 15:22:56,594] 1114 aioice.ice - INFO - Connection(0) Could not bind to 172.16.26.15 - [WinError 10049] The requested address is not valid in its context
+[2024-12-09 15:22:56,594] 1114 aioice.ice - INFO - Connection(0) Could not bind to 169.254.255.111 - [WinError 10049] The requested address is not valid in its context
+[2024-12-09 15:22:56,596] 1114 aioice.ice - INFO - Connection(0) Could not bind to 169.254.59.57 - [WinError 10049] The requested address is not valid in its context
+[2024-12-09 15:22:56,598] 1114 aioice.ice - INFO - Connection(0) Could not bind to 169.254.197.227 - [WinError 10049] The requested address is not valid in its context
+[2024-12-09 15:22:56,634] 1114 aioice.ice - INFO - Connection(0) Check CandidatePair(('172.26.82.108', 63756) -> ('172.26.82.108', 49472)) State.FROZEN -> State.WAITING
+[2024-12-09 15:22:56,640] 520 streamlit_webrtc.webrtc - INFO - ICE connection state is checking
+[2024-12-09 15:22:56,640] 1114 aioice.ice - INFO - Connection(0) Check CandidatePair(('172.26.82.108', 63756) -> ('172.26.82.108', 49472)) State.WAITING -> State.IN_PROGRESS
+[2024-12-09 15:22:59,901] 1114 aioice.ice - INFO - Connection(0) Check CandidatePair(('172.26.82.108', 63756) -> ('172.26.82.108', 49472)) State.IN_PROGRESS -> State.SUCCEEDED
+[2024-12-09 15:23:00,957] 1114 aioice.ice - INFO - Connection(0) ICE completed
+[2024-12-09 15:23:00,976] 520 streamlit_webrtc.webrtc - INFO - ICE connection state is completed
+[2024-12-09 15:23:42,408] 174 streamlit_webrtc.webrtc - INFO - Track audio ended
+[2024-12-09 15:23:42,408] 174 streamlit_webrtc.webrtc - INFO - Track video ended
+[2024-12-09 15:23:42,413] 520 streamlit_webrtc.webrtc - INFO - ICE connection state is closed
+[2024-12-09 15:24:04,933] 103 streamlit_webrtc.webrtc - INFO - Track audio received
+[2024-12-09 15:24:04,934] 148 streamlit_webrtc.webrtc - INFO - Add a track <aiortc.rtcrtpreceiver.RemoteStreamTrack object at 0x00000237240296D0> of kind audio to <aiortc.rtcpeerconnection.RTCPeerConnection object at 0x0000023723CF9D00>
+[2024-12-09 15:24:04,934] 103 streamlit_webrtc.webrtc - INFO - Track video received
+[2024-12-09 15:24:04,935] 148 streamlit_webrtc.webrtc - INFO - Add a track <aiortc.rtcrtpreceiver.RemoteStreamTrack object at 0x0000023723CD82F0> of kind video to <aiortc.rtcpeerconnection.RTCPeerConnection object at 0x0000023723CF9D00>
+[2024-12-09 15:24:04,957] 1114 aioice.ice - INFO - Connection(2) Could not bind to 169.254.211.164 - [WinError 10049] The requested address is not valid in its context
+[2024-12-09 15:24:04,958] 1114 aioice.ice - INFO - Connection(2) Could not bind to 172.16.26.15 - [WinError 10049] The requested address is not valid in its context
+[2024-12-09 15:24:04,959] 1114 aioice.ice - INFO - Connection(2) Could not bind to 169.254.255.111 - [WinError 10049] The requested address is not valid in its context
+[2024-12-09 15:24:04,959] 1114 aioice.ice - INFO - Connection(2) Could not bind to 169.254.59.57 - [WinError 10049] The requested address is not valid in its context
+[2024-12-09 15:24:04,962] 1114 aioice.ice - INFO - Connection(2) Could not bind to 169.254.197.227 - [WinError 10049] The requested address is not valid in its context
+[2024-12-09 15:24:04,991] 1114 aioice.ice - INFO - Connection(2) Check CandidatePair(('172.26.82.108', 51202) -> ('172.26.82.108', 50433)) State.FROZEN -> State.WAITING
+[2024-12-09 15:24:04,992] 520 streamlit_webrtc.webrtc - INFO - ICE connection state is checking
+[2024-12-09 15:24:04,992] 1114 aioice.ice - INFO - Connection(2) Check CandidatePair(('172.26.82.108', 51202) -> ('172.26.82.108', 50433)) State.WAITING -> State.IN_PROGRESS
+[2024-12-09 15:24:05,271] 1114 aioice.ice - INFO - Connection(2) Check CandidatePair(('172.26.82.108', 51202) -> ('172.26.82.108', 50433)) State.IN_PROGRESS -> State.SUCCEEDED
+[2024-12-09 15:24:09,060] 1114 aioice.ice - INFO - Connection(2) ICE completed
+[2024-12-09 15:24:09,064] 520 streamlit_webrtc.webrtc - INFO - ICE connection state is completed
+[2024-12-09 15:25:02,184] 174 streamlit_webrtc.webrtc - INFO - Track audio ended
+[2024-12-09 15:25:02,184] 174 streamlit_webrtc.webrtc - INFO - Track video ended
+[2024-12-09 15:25:02,191] 520 streamlit_webrtc.webrtc - INFO - ICE connection state is closed

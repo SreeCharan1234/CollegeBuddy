@@ -1,36 +1,50 @@
-import PyPDF2
-import streamlit as st
-import pandas as pd
-import re
-from datetime import date
-import PIL.Image
-from PIL import Image
-from bs4 import BeautifulSoup
-import streamlit.components.v1 as components
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import calplot
+import subprocess
 import plotly.express as px
+from datetime import date
 from pathlib import Path
-from streamlit_ace import st_ace
-from streamlit_option_menu import option_menu
-import datetime
-import os
-import base64
-import streamlit_shadcn_ui as ui
-import textwrap
-import google.generativeai as genai
-from IPython.display import display,Markdown
-from streamlit_lottie import st_lottie
-import requests 
-from local_components import card_container
-import sys
-import io
+import shutil
 import speech_recognition as sr
 import pdf2image
+import gtts
+import pandas as pd
+import streamlit.components.v1 as components
+from local_components import card_container
+import json
+import traceback
+import calplot
+from dotenv import load_dotenv
+import streamlit as st
+from streamlit_ace import st_ace
+from PIL import Image
+import streamlit_shadcn_ui as ui
+import base64
+from bs4 import BeautifulSoup
+from datetime import datetime
+import streamlit as st
+from streamlit_extras.let_it_rain import rain
+from tempfile import NamedTemporaryFile
+from streamlit_option_menu import option_menu
+from streamlit_extras.mandatory_date_range import date_range_picker
+import datetime
+import os
+import textwrap
+import google.generativeai as genai
+import matplotlib.pyplot as plt
+from IPython.display import display
+from local_components import card_container
+from IPython.display import Markdown
+from streamlit_lottie import st_lottie
+import requests 
+import sys
+import io
+from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
+from youtube_transcript_api import YouTubeTranscriptApi
+import time
+import mysql.connector
 import plotly.graph_objects as go
-import plotly.express as px
+from util.leetcode import get_leetcode_data1, RQuestion, skills, let_Badges, graph
+from util.codeforces import get_user_data, get_contest_data
+from util.github import run_gitleaks, count_lines_of_code, clone_and_count_lines, is_repo_processed, get_all_user_repos, update_progress_file
 
 global s
 k=0
@@ -40,7 +54,13 @@ t=[ "Python", "Java", "C++", "JavaScript", "Ruby", "PHP", "Swift", "Kotlin",
     "C#", "Go", "R", "TypeScript", "Scala", "Perl", "Objective-C", "Dart", 
     "Rust", "Haskell", "MATLAB", "SQL", "HTML/CSS", "React", "Angular", "Vue.js", 
     "Node.js", "Django", "Flask", "Spring", "ASP.NET", "Ruby on Rails"]
+
 EXAMPLE_NO = 1
+
+username = 'root'
+password = '1234'
+host = 'localhost'
+database = 'profiles'
 recognizer = sr.Recognizer()
 st.set_page_config(page_title="KnowledgeBuilder", page_icon='src/Logo College.png', layout="wide", initial_sidebar_state="auto", menu_items=None)
 if "current_theme" not in st.session_state:
@@ -123,12 +143,63 @@ def load_lottieurl(url: str):
         if r.status_code != 200:
             return None
         return r.json() 
+def listofuser():
+    query = "SELECT name FROM user_profiles"
+    cnx = connect_to_mysql()
+    ans=execute_query(query)
+    user_data = []
+    for name in ans:
+        user_data=user_data+[name[0]]
+    return user_data
+def list_profiles(name):
+    query = f"SELECT * FROM user_profiles WHERE name = '{name}'"
+    cnx = connect_to_mysql()
+    ans=execute_query(query)
+    ans=list(ans[0])
+    ans[0],ans[2]=ans[2],ans[0]
+    return ans
+def connect_to_mysql():
+    try:
+        cnx = mysql.connector.connect(
+            user=username,
+            password=password,
+            host=host,
+            database=database
+        )
+        return cnx
+    except mysql.connector.Error as err:
+        st.error(f"Error connecting to MySQL database: {err}")
+        return None
+def execute_query(query):
+    cnx = connect_to_mysql()
+    if cnx:
+        cursor = cnx.cursor()
+        cursor.execute(query)
+        result = cursor.fetchall()
+        cnx.commit()  # Commit the changes to the database
+        cursor.close()
+        cnx.close()
+        return result
+    else:
+        st.warning("Failed to add data to the database.")
+
+
+def process_data(data):
+    rows = []
+    for category, topics in data.items():
+        for topic in topics:
+            rows.append(
+                {"Category": category.capitalize(), "Topic": topic["tagName"], "Problems Solved": topic["problemsSolved"]}
+            )
+    return pd.DataFrame(rows)
+
+
 def streamlit_menu(example=1):
     if example == 1:
         with st.sidebar:
             selected = option_menu(
                 menu_title="Profile - Builder ",  # required
-                options=["Dashboard", "ATS Detector", "LinkedIn Profile","Your Progress"],  # required
+                options=["Register","Dashboard", "ATS Detector", "1vs1","LinkedIn Profile","Your Progress"],  # required
                 icons=["bi bi-person-lines-fill", "bi bi-binoculars-fill", "bi bi-linkedin","bi bi-envelope-at"],  # optional
                 menu_icon="cast",  # optional
                  
@@ -141,6 +212,22 @@ selected = streamlit_menu(example=EXAMPLE_NO)
 
 if 'questions' not in st.session_state:
     st.session_state.questions = []
+if selected=="Register":
+    st.title("If You Are New")
+    st.write("Please fill in the following details to save your data ")    
+    name = st.text_input("Enter your name")
+    leetcode_username = st.text_input("Enter your LeetCode username")
+    codechef_username = st.text_input("Enter your CodeChef username ")
+    github_username = st.text_input("Enter your GitHub username")
+    codeforces_username = st.text_input("Enter your CodeForces username")
+    if st.button("Save Data"):
+        insert_query = f"""
+            INSERT INTO user_profiles (name, leetcode_username, codechef_username, github_username, codeforces_username)
+            VALUES ('{name}', '{leetcode_username}', '{codechef_username}', '{github_username}', '{codeforces_username}')
+        """
+        execute_query(insert_query)
+    st.title("Data from Excel")
+
 if selected == "Dashboard":
 
     link="https://lottie.host/02515adf-e5f1-41c8-ab4f-8d07af1dcfb8/30KYw8Ui2q.json"
@@ -909,6 +996,475 @@ if selected == "Your Progress":
             with col5:
                 if st.button("Button 5"):
                     pass
+if selected=="1vs1":
+    link="https://lottie.host/02515adf-e5f1-41c8-ab4f-8d07af1dcfb8/30KYw8Ui2q.json"
+    l=load_lottieurl(link)
+    col1, col2 = st.columns([1.3,9])
+    with col1:
+            st.lottie(l, height=100, width=100)
+    with col2:
+            st.header(f":rainbow[Compare with your friend]👧👦", divider='rainbow')
+
+    ans=listofuser()
+    left,right=st.columns(2)
+    your_id,friends_id="",""
+    with left:
+        your_id = st.multiselect("What is your ?", ans, [], placeholder="Select Your's Id")  
+    with right:
+        friends_id = st.multiselect("What is your friend's?", ans, [], placeholder="Select Your Friend's Id")
+   
+    if your_id and friends_id:
+        your_id = list_profiles(your_id[0])
+        friends_id = list_profiles(friends_id[0])
+        your_data = get_leetcode_data1(your_id[0])
+        friend_data = get_leetcode_data1(friends_id[0])
+        your_RQuestion=RQuestion(your_id[0], limit=50)
+        friend_RQuestion=RQuestion(friends_id[0], limit=50)
+        your_let_Badges=let_Badges(your_id[0])
+        friend_let_Badges=let_Badges(friends_id[0]) 
+        your_skils=skills(your_id[0])
+        friend_skils=skills(friends_id[0])
+        your_graph=graph(your_id[0])
+        friend_graph=graph(friends_id[0])
+        my_df = process_data(your_skils)
+        friends_df = process_data(friend_skils)
+        st.title("LeetCode Analysis")      
+        your, midle, friend = st.columns([1.6,0.1, 1.6])
+        with your:           
+            user_profile = your_data['userProfile']
+            contest_info = your_data['userContestRanking']           
+            ko=[]
+            for stat in user_profile['submitStats']['acSubmissionNum']:
+                ko=ko+[stat['count']]
+            cols = st.columns([1,2.9])
+            with cols[0]:
+                    image = st.image(user_profile['profile']['userAvatar'])
+            st.markdown(
+                    """
+                    <style>
+                    .circle-image {
+                        border-radius: 50%;
+                    }
+                    </style>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+                # Create a link around the image
+            image_html = f'<a href="{link}" target="_blank"></a>'
+            st.markdown(image_html, unsafe_allow_html=True)
+            with cols[1]:
+                    z=your_data['userProfile']['username']
+                    ui.metric_card(title="User Name", content=z, description="", key="card1")
+            perc,ratong = st.columns([1,1])
+            with perc:
+                ui.metric_card(title="Top Percentage", content=contest_info['topPercentage'], description="Great🥰", key="card2")
+            with ratong:
+                ui.metric_card(title="Rating", content=user_profile['profile']['ranking'], description="Good😁", key="card3")         
+            st.header("Easy-Medium-Hard😊😑😥", divider=True)
+            total_questions = ko[0]
+            easy_questions = ko[1]
+            medium_questions = ko[2]
+            hard_questions = ko[3]
+                # Calculate percentages
+            easy_percent = (easy_questions / total_questions) * 100
+            medium_percent = (medium_questions / total_questions) * 100
+            hard_percent = (hard_questions / total_questions) * 100
+                  # Display total questions
+            col1,  col3 = st.columns([3, 1])  
+            with col1:
+                            ui.metric_card(title="Total Question ", content=ko[0], key="card9")
+
+                        # Display pie chart
+                        
+                            fig, ax = plt.subplots()
+                            ax.pie([easy_percent, medium_percent, hard_percent],
+                                labels=["Easy", "Medium", "Hard"],
+                                autopct="%1.1f%%",
+                                startangle=140)
+                            ax.axis("equal")  # Equal aspect ratio for a circular pie chart
+                            st.pyplot(fig)
+
+                      # Display difficulty counts
+            with col3:
+                            ui.metric_card(title="Easy ", content=ko[1], key="card12")
+                            ui.metric_card(title="Medium", content=ko[2], key="card10")
+                            ui.metric_card(title="Hard ", content=ko[3], key="card11")        
+            
+            st.header("SkillTracker🤹‍♂️🦾", divider=True)
+            categories = list(my_df["Category"].unique())
+            selected_categories = st.multiselect("Select Categories for Your Data", categories, default=categories, key="my_categories")
+
+            # Filter and Sort Data
+            filtered_my_df = my_df[my_df["Category"].isin(selected_categories)]
+            sorted_my_df = filtered_my_df.sort_values(by="Problems Solved", ascending=False)
+
+            # Bar Chart
+            
+            fig, ax = plt.subplots(figsize=(6, 4))
+            for category in sorted_my_df["Category"].unique():
+                category_data = sorted_my_df[sorted_my_df["Category"] == category]
+                ax.bar(category_data["Topic"], category_data["Problems Solved"], label=category)
+
+            ax.set_ylabel("Problems Solved")
+            ax.set_xlabel("Topic")
+            ax.set_title("Your Problems Solved (Sorted)")
+            ax.legend()
+            plt.xticks(rotation=90, ha="right")
+            st.pyplot(fig)
+            # Detailed Data
+            st.subheader("Detailed Data View")
+            st.dataframe(sorted_my_df)            
+            language_data = your_data['matchedUser']['languageProblemCount']
+            language_df = pd.DataFrame(language_data)
+            language_df.columns = ["Language", "Problems Solved"]
+            st.header("Questions per Language🤠", divider=True)
+            st.table(language_df)
+            header = [ "Question Name", "Timestamp"]
+            def format_timestamp(timestamp):
+                                dt_object = datetime.datetime.fromtimestamp(int(timestamp))
+                                return dt_object.strftime("%Y-%m-%d %I:%M %p")  # AM/PM format
+            processed_data = []                        
+            for submission in your_RQuestion:
+                                formatted_date = format_timestamp(submission['timestamp'])
+                                processed_data.append([ submission['title'], formatted_date])
+            df = pd.DataFrame(processed_data, columns=["Question Name", "Timestamp"])
+            st.header("Your Recent Question😊📕📅",divider=True)
+            st.write(df)
+            st.header("Badges 💫🌟",divider=True)
+            total_badges = len(your_let_Badges["matchedUser"]["badges"])
+            with st.expander(f"Total Badges: {total_badges}"):
+                # Create three columns
+                col1, col2, col3 = st.columns(3)
+
+                # Iterate over badges and distribute them to columns
+                for i, badge in enumerate(your_let_Badges["matchedUser"]["badges"]):
+                    if i % 3 == 0:
+                        with col1:
+                            st.write(f"**{badge['displayName']}**")
+                            st.image(badge['medal']['config']["iconGif"], width=100)
+                    elif i % 3 == 1:
+                        with col2:
+                            st.write(f"**{badge['displayName']}**")
+                            st.image(badge['medal']['config']["iconGif"], width=100)
+                    else:
+                        with col3:
+                            st.write(f"**{badge['displayName']}**")
+                            st.image(badge['medal']['config']["iconGif"], width=100)
+            st.header("Graph 📊📈📉",divider=True)
+            data=data=your_graph['matchedUser']['userCalendar']['submissionCalendar']
+            data = json.loads(data)
+            df = pd.DataFrame(list(data.items()), columns=['Timestamp', 'Count'])
+            df['Date'] = pd.to_datetime(df['Timestamp'].astype(int), unit='s')
+            df.set_index('Date', inplace=True)
+            daily_counts = df['Count'].resample('D').sum().fillna(0)
+            cmap = 'plasma' 
+            fig, ax = calplot.calplot(daily_counts, cmap=cmap, figsize=(12, 6),colorbar=False)
+            st.pyplot(fig)
+        with midle:
+            st.markdown("""
+            <style>
+            .vertical-line {
+                border-left: 2px solid black;
+                height: 3200px;
+            }
+            </style>
+
+            <div class="vertical-line"></div>
+            """, unsafe_allow_html=True)
+
+        with friend:
+            user_profile = friend_data['userProfile']
+            contest_info = friend_data['userContestRanking']  
+            ko=[]
+            for stat in user_profile['submitStats']['acSubmissionNum']:
+                ko=ko+[stat['count']]         
+            cols = st.columns([1,2.9])
+            with cols[0]:
+                    image = st.image(user_profile['profile']['userAvatar'])
+            st.markdown(
+                    """
+                    <style>
+                    .circle-image {
+                        border-radius: 50%;
+                    }
+                    </style>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+                # Create a link around the image
+            image_html = f'<a href="{link}" target="_blank"></a>'
+            st.markdown(image_html, unsafe_allow_html=True)
+            with cols[1]:
+                    z=friend_data['userProfile']['username']
+                    ui.metric_card(title="User Name", content=z, description="", key="card24")
+            perc,ratong = st.columns([1,1])
+            with perc:
+                ui.metric_card(title="Top Percentage", content=contest_info['topPercentage'], description="Great🥰", key="card26")
+            with ratong:
+                ui.metric_card(title="Rating", content=user_profile['profile']['ranking'], description="Good😁", key="card36") 
+            st.header("Easy-Medium-Hard😊😑😥", divider=True)
+            total_questions = ko[0]
+            easy_questions = ko[1]
+            medium_questions = ko[2]
+            hard_questions = ko[3]
+            easy_percent = (easy_questions / total_questions) * 100
+            medium_percent = (medium_questions / total_questions) * 100
+            hard_percent = (hard_questions / total_questions) * 100
+            col1,  col3 = st.columns([3, 1])
+            with col1:
+                            ui.metric_card(title="Total Question ", content=ko[0], key="card94")                        
+                            fig, ax = plt.subplots()
+                            ax.pie([easy_percent, medium_percent, hard_percent],
+                                labels=["Easy", "Medium", "Hard"],
+                                autopct="%1.1f%%",
+                                startangle=140)
+                            ax.axis("equal")  # Equal aspect ratio for a circular pie chart
+                            st.pyplot(fig)
+
+                      # Display difficulty counts
+            with col3:
+                            ui.metric_card(title="Easy ", content=ko[1], key="card124")
+                            ui.metric_card(title="Medium", content=ko[2], key="card104")
+                            ui.metric_card(title="Hard ", content=ko[3], key="card114")
+
+            st.header("SkillTracker🤹‍♂️🦾", divider=True)
+
+            categories = list(friends_df["Category"].unique())
+            selected_categories = st.multiselect("Select Categories for Friends' Data", categories, default=categories, key="friends_categories")
+
+            # Filter and Sort Data
+            filtered_friends_df = friends_df[friends_df["Category"].isin(selected_categories)]
+            sorted_friends_df = filtered_friends_df.sort_values(by="Problems Solved", ascending=False)
+
+            # Bar Chart
+            
+            fig, ax = plt.subplots(figsize=(6, 4))
+            for category in sorted_friends_df["Category"].unique():
+                category_data = sorted_friends_df[sorted_friends_df["Category"] == category]
+                ax.bar(category_data["Topic"], category_data["Problems Solved"], label=category)
+
+            ax.set_ylabel("Problems Solved")
+            ax.set_xlabel("Topic")
+            ax.set_title("Friends' Problems Solved (Sorted)")
+            ax.legend()
+            plt.xticks(rotation=90, ha="right")
+            st.pyplot(fig)
+
+            # Detailed Data
+            st.subheader("Detailed Data View")
+            st.dataframe(sorted_friends_df)
+
+
+
+
+            language_data = friend_data['matchedUser']['languageProblemCount']
+            language_df = pd.DataFrame(language_data)
+            language_df.columns = ["Language", "Problems Solved"]
+            st.header("Questions per Language🤠", divider=True)
+            st.table(language_df)
+
+            header = [ "Question Name", "Timestamp"]
+            def format_timestamp(timestamp):
+                                dt_object = datetime.datetime.fromtimestamp(int(timestamp))
+                                return dt_object.strftime("%Y-%m-%d %I:%M %p")  # AM/PM format
+            processed_data = []
+                           
+                          
+            for submission in friend_RQuestion:
+                                formatted_date = format_timestamp(submission['timestamp'])
+                                processed_data.append([ submission['title'], formatted_date])
+            df = pd.DataFrame(processed_data, columns=["Question Name", "Timestamp"])
+            
+            st.header("Your Recent Question😊📕📅",divider=True)
+            st.write(df)
+            total_badges = len(friend_let_Badges["matchedUser"]["badges"])
+
+            # Create the expander
+            
+            st.header("Badges 💫🌟",divider=True)
+            with st.expander(f"Total Badges: {total_badges}"):
+                # Create three columns
+                col1, col2, col3 = st.columns(3)
+
+                # Iterate over badges and distribute them to columns
+                for i, badge in enumerate(friend_let_Badges["matchedUser"]["badges"]):
+                    if i % 3 == 0:
+                        with col1:
+                            st.write(f"**{badge['displayName']}**")
+                            st.image(badge['medal']['config']["iconGif"], width=100)
+                    elif i % 3 == 1:
+                        with col2:
+                            st.write(f"**{badge['displayName']}**")
+                            st.image(badge['medal']['config']["iconGif"], width=100)
+                    else:
+                        with col3:
+                            st.write(f"**{badge['displayName']}**")
+                            st.image(badge['medal']['config']["iconGif"], width=100)
+
+            st.header("Graph 📊📈📉",divider=True)
+            data=friend_graph['matchedUser']['userCalendar']['submissionCalendar']
+            data= json.loads(data)
+            df = pd.DataFrame(list(data.items()), columns=['Timestamp', 'Count'])
+            
+            df['Date'] = pd.to_datetime(df['Timestamp'].astype(int), unit='s')
+            df.set_index('Date', inplace=True)
+            daily_counts1 = df['Count'].resample('D').sum().fillna(0)
+            cmap = 'plasma' 
+            fig3, ax = calplot.calplot(daily_counts1, cmap=cmap, figsize=(12, 6),colorbar=False)
+            st.pyplot(fig3) 
+        codeforce_your=your_id[5]
+        codeforce_friend=friends_id[5]
+        codechef_username_your=your_id[3]
+        codechef_username_friend=friends_id[3]
+        with your:   
+       
+            st.header("Codeforces and Codechef ",divider=True)
+            data=get_user_data(codeforce_your)
+            # last_online_time = datetime.utcfromtimestamp(data["lastOnlineTimeSeconds"]).strftime('%Y-%m-%d %H:%M:%S')
+            # registration_time = datetime.utcfromtimestamp(data["registrationTimeSeconds"]).strftime('%Y-%m-%d %H:%M:%S')
+            st.image(data["avatar"], caption="User's Avatar", width=100)
+            st.subheader(f"Username: {data['handle']}")
+
+            # Display Rating and Rank
+            st.write(f"**Rank:** {data['rank']}")
+            st.write(f"**Max Rank:** {data['maxRank']}")
+            st.write(f"**Rating:** {data['rating']}")
+            st.write(f"**Max Rating:** {data['maxRating']}")
+
+            # Display Friend Count and Contribution
+            st.write(f"**Friend Count:** {data['friendOfCount']}")
+            st.write(f"**Contribution:** {data['contribution']}")
+            def main(user):
+                
+                total_lines = 0
+            
+                lang_ext = {
+                    'Python': '.py',
+                    'Java': '.java',
+                    'JavaScript': '.js',
+                    'C': '.c',
+                    'C++': '.cpp',
+                    'C#': '.cs',
+                    'TypeScript': '.ts',
+                    'PHP': '.php',
+                    'Swift': '.swift',
+                    'Go': '.go'
+                }
+
+                df = pd.DataFrame(columns=['User', 'Repo', 'Lines of Code', 'Language'])
+
+                
+                    #st.image(logo_url, width=200)
+                    #st.title('Lines of Code Counter')
+                #user = st.text_input('Enter GitHub Username')
+                language = st.selectbox('Select Language', list(lang_ext.keys()))
+
+                if user and language:
+                    st.sidebar.success(f'Fetching repositories for {user}')
+                    repos = get_all_user_repos(user)
+                    st.sidebar.code(f'Found {len(repos)} repositories for {user}.')
+                    #st.write(repos)
+                    data = []
+                    progress_bar = st.progress(0)
+                    progress_filename = f"{user}_progress.txt"
+                    df.to_csv('progress.csv', index=False)
+                    processing_message = st.empty()
+                    metrics_message = st.empty()
+                    repo_metrics_message = st.empty()
+                    
+
+                    
+                    for i, repo in enumerate(repos):
+                        if not is_repo_processed(progress_filename, repo):  
+                            st.write(f'Processing {repo}')
+                            lines = clone_and_count_lines(user, repo, lang_ext[language])
+                            data.append([user, repo, lines, language])
+                            total_lines += lines
+                            metrics_message.info(f'𝖳𝗈𝗍𝖺𝗅 𝖫𝗂𝗇𝖾𝗌 𝗈𝖿 {language}: {total_lines}')
+                            repo_metrics_message.success(f'𝖳𝗈𝗍𝖺𝗅 𝖱𝖾𝗉𝗈𝗌𝗂𝗍𝗈𝗋𝗂𝖾𝗌: {i+1}')
+                            processing_message.code(f'Processing {repo}')
+                            update_progress_file(progress_filename, repo)
+                        else:
+                            processing_message.code(f'Skipping {repo}, already processed...')
+                        progress_bar.progress((i + 1) / len(repos))  
+                    df = pd.DataFrame(data, columns=['User', 'Repo', 'Lines of Code', 'Language'])
+                    #st.dataframe(df)  
+                    st.sidebar.dataframe(df)
+                    fig0 = px.parallel_categories(df, color="Lines of Code", dimensions=['Repo','Lines of Code', 'Language'],color_continuous_scale=px.colors.sequential.Inferno)
+                    st.plotly_chart(fig0, use_container_width=True)    
+                    #fig0 = px.parallel_categories(df, color="Lines of Code", dimensions=['User', 'Repo', 'Lines of Code', 'Language'], color_continuous_scale=px.colors.sequential.Inferno)
+                    #st.plotly_chart(fig0, use_container_width=True)
+                    cols = st.columns(2)  
+                    
+                    show_secrets = st.sidebar.checkbox('Show secrets', key='show_secrets_key')
+                    run_secrets = st.sidebar.checkbox('Look for secrets?', key='run_secrets_key')
+                    if run_secrets:
+                        for x in repos:
+                            run_gitleaks(user, x)
+                    if show_secrets:
+                        secrets_file = f"{user}_secrets.txt"
+                        with open(secrets_file, 'r') as f:
+                            secrets = f.read()
+                            st.code(secrets)
+                            st.markdown(f'<a href="{secrets_file}" download>Download {user} secrets</a>', unsafe_allow_html=True)
+                    with cols[0]:
+                        fig1 = px.bar(df, x='Repo', y='Lines of Code', title='Lines of Code per Repository')
+                        st.plotly_chart(fig1, use_container_width=True)
+                    
+                    with cols[1]:
+                        fig2 = px.pie(df, names='Repo', values='Lines of Code', title='Lines of Code per Repository (Pie Chart)')
+                        st.plotly_chart(fig2, use_container_width=True)
+                        
+                    with cols[0]:
+                        fig3 = px.scatter(df, x='Repo', y='Lines of Code', title='Lines of Code per Repository (Scatter Plot)')
+                        st.plotly_chart(fig3, use_container_width=True)
+                        
+                    with cols[1]:
+                        fig4 = px.histogram(df, x='Lines of Code', nbins=20, title='Lines of Code Distribution (Histogram)')
+                        st.plotly_chart(fig4, use_container_width=True)
+
+                    
+                    
+
+            main(your_id[4])
+
+        with midle:
+            st.markdown("""
+            <style>
+            .vertical-line {
+                border-left: 2px solid black;
+                height: 3200px;
+            }
+            </style>
+
+            <div class="vertical-line"></div>
+            """, unsafe_allow_html=True)
+
+        with friend:
+            st.header("Codeforces and Codechef ",divider=True)
+
+            data=get_user_data(codeforce_friend)
+            # last_online_time = datetime.utcfromtimestamp(data["lastOnlineTimeSeconds"]).strftime('%Y-%m-%d %H:%M:%S')
+            # registration_time = datetime.utcfromtimestamp(data["registrationTimeSeconds"]).strftime('%Y-%m-%d %H:%M:%S')
+            st.image(data["avatar"], caption="User's Avatar", width=100)
+            st.subheader(f"Username: {data['handle']}")
+
+            # Display Rating and Rank
+            st.write(f"**Rank:** {data['rank']}")
+            st.write(f"**Max Rank:** {data['maxRank']}")
+            st.write(f"**Rating:** {data['rating']}")
+            st.write(f"**Max Rating:** {data['maxRating']}")
+
+            # Display Friend Count and Contribution
+            st.write(f"**Friend Count:** {data['friendOfCount']}")
+            st.write(f"**Contribution:** {data['contribution']}")
+        # Display Time Information
+        #st.write(f"**Last Online Time:** {last_online_time}")
+        #st.write(f"**Registration Time:** {registration_time}")
+
+ 
 
 
                     

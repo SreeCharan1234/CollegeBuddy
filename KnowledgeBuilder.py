@@ -129,13 +129,6 @@ def example():
         falling_speed=7,
         animation_length="infinite",
     )
-def example2():
-    rain(
-        emoji="*",
-        font_size=40,
-        falling_speed=8,
-        animation_length="infinite",
-    )
 def get_gemini_response(question):
     model = genai.GenerativeModel('gemini-pro')
     response = model.generate_content(question)
@@ -185,7 +178,7 @@ def streamlit_menu(example=1):
                 
                 menu_title="Knowledge Builder🧠",  # required
                 options=["Road Map","Mock Interview","Code Editor"],  # required
-                icons=["geo-alt-fill","bi bi-code-slash","bi bi-camera-video-fill","robot"],  # optional
+                icons=["geo-alt-fill","bi bi-camera-video-fill","bi bi-code-slash"],  # optional
                 menu_icon="cast",  # optional
                 default_index=0,
             )
@@ -220,6 +213,7 @@ def streamlit_menu(example=1):
                 # optional
             )
         return selected
+
 def main():
     link="https://lottie.host/299688b5-e6b2-48ad-b2e9-2fa14b1fb117/TXqg2APXpL.json"
     l=load_lottieurl(link)
@@ -454,12 +448,11 @@ def main():
 
 
 
-
 selected = streamlit_menu(example=EXAMPLE_NO)
 if 'questions' not in st.session_state:
     st.session_state.questions = []
 if selected == "Road Map":
-    example2()
+    example()
     link="https://lottie.host/76509b4e-81b1-4877-9974-1fa506b294b1/ja7bfvhaEb.json"
     l=load_lottieurl(link)
     col1, col2 = st.columns([1,9])  # Create two columns
