@@ -41,3 +41,4 @@ flask
 flask-socketio
 streamlit_chat
 mysql-connector-python
+sqlite3

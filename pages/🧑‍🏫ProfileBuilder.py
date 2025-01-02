@@ -6,6 +6,8 @@ import shutil
 import speech_recognition as sr
 import pdf2image
 import gtts
+import sqlite3
+import re  
 import pandas as pd
 import streamlit.components.v1 as components
 from local_components import card_container
@@ -13,7 +15,6 @@ import json
 import traceback
 import calplot
 from dotenv import load_dotenv
-import streamlit as st
 import PIL
 import PyPDF2
 import re
@@ -48,7 +49,7 @@ import plotly.graph_objects as go
 from util.leetcode import get_leetcode_data1, RQuestion, skills, let_Badges, graph
 from util.codeforces import get_user_data, get_contest_data
 from util.github import run_gitleaks, count_lines_of_code, clone_and_count_lines, is_repo_processed, get_all_user_repos, update_progress_file
-
+from util.login import create_table, add_user, authenticate_user, is_valid_password,listofuser,list_profiles,listofcollege
 global s
 k=0
 api_key=os.getenv("API-KEY")
@@ -60,18 +61,11 @@ t=[ "Python", "Java", "C++", "JavaScript", "Ruby", "PHP", "Swift", "Kotlin",
 
 EXAMPLE_NO = 1
 
-username = 'root'
-password = '1234'
-host = 'localhost'
-database = 'profiles'
-recognizer = sr.Recognizer()
+
 st.set_page_config(page_title="KnowledgeBuilder", page_icon='src/Logo College.png', layout="wide", initial_sidebar_state="auto", menu_items=None)
 if "current_theme" not in st.session_state:
     st.session_state.current_theme = "light"
-current_dir = Path(__file__).parent if "__file__" in locals() else Path.cwd()
-css_file = current_dir / "styles" / "main.css"
-with open(css_file) as f:
-    st.markdown("<style>{}</style>".format(f.read()), unsafe_allow_html=True)
+
 def get_leetcode_data(username):
     url = "https://leetcode.com/graphql"
     query = """
@@ -146,45 +140,6 @@ def load_lottieurl(url: str):
         if r.status_code != 200:
             return None
         return r.json() 
-def listofuser():
-    query = "SELECT name FROM user_profiles"
-    cnx = connect_to_mysql()
-    ans=execute_query(query)
-    user_data = []
-    for name in ans:
-        user_data=user_data+[name[0]]
-    return user_data
-def list_profiles(name):
-    query = f"SELECT * FROM user_profiles WHERE name = '{name}'"
-    cnx = connect_to_mysql()
-    ans=execute_query(query)
-    ans=list(ans[0])
-    ans[0],ans[2]=ans[2],ans[0]
-    return ans
-def connect_to_mysql():
-    try:
-        cnx = mysql.connector.connect(
-            user=username,
-            password=password,
-            host=host,
-            database=database
-        )
-        return cnx
-    except mysql.connector.Error as err:
-        st.error(f"Error connecting to MySQL database: {err}")
-        return None
-def execute_query(query):
-    cnx = connect_to_mysql()
-    if cnx:
-        cursor = cnx.cursor()
-        cursor.execute(query)
-        result = cursor.fetchall()
-        cnx.commit()  # Commit the changes to the database
-        cursor.close()
-        cnx.close()
-        return result
-    else:
-        st.warning("Failed to add data to the database.")
 def process_data(data):
     rows = []
     for category, topics in data.items():
@@ -193,39 +148,97 @@ def process_data(data):
                 {"Category": category.capitalize(), "Topic": topic["tagName"], "Problems Solved": topic["problemsSolved"]}
             )
     return pd.DataFrame(rows)
+
+
 def streamlit_menu(example=1):
     if example == 1:
         with st.sidebar:
             selected = option_menu(
                 menu_title="Profile - Builder ",  # required
-                options=["Register","Dashboard",  "1vs1","LinkedIn Profile","Resume Builder","ATS Detector"],  # required
+                options=["Register","Dashboard",  "1vs1","LinkedIn Profile","collage","ATS Detector"],  # required
                 icons=["bi bi-person-lines-fill","bi bi-border-all", "bi bi-binoculars-fill", "bi bi-linkedin","bi bi-envelope-at","bi bi-file-person"],  # optional
                 menu_icon="cast",  # optional
                  
                 default_index=0,
             )
         return selected
-def create_rating_dropdown(label):
-    return st.selectbox(label, ['1', '2', '3', '4', '5'], index=2)
+     
 selected = streamlit_menu(example=EXAMPLE_NO)
 
 if 'questions' not in st.session_state:
     st.session_state.questions = []
-if selected=="Register":
-    st.title("If You Are New")
-    st.write("Please fill in the following details to save your data ")    
-    name = st.text_input("Enter your name")
-    leetcode_username = st.text_input("Enter your LeetCode username")
-    codechef_username = st.text_input("Enter your CodeChef username ")
-    github_username = st.text_input("Enter your GitHub username")
-    codeforces_username = st.text_input("Enter your CodeForces username")
-    if st.button("Save Data"):
-        insert_query = f"""
-            INSERT INTO user_profiles (name, leetcode_username, codechef_username, github_username, codeforces_username)
-            VALUES ('{name}', '{leetcode_username}', '{codechef_username}', '{github_username}', '{codeforces_username}')
-        """
-        execute_query(insert_query)
-    st.title("Data from Excel")
+
+
+if selected == "Register":
+    global username
+    create_table()
+    st.title("Access")
+    option = st.selectbox("Login/Signup", ["Sign up", "Login"])
+
+    if option == "Sign up":
+        # Input fields
+        username = st.text_input("Username", placeholder="Enter your username (must be unique)")
+        password = st.text_input("Password", placeholder="Enter your password", type="password")
+        with st.container():
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.subheader("Profile Information")
+                codechef_id = st.text_input("CodeChef ID", placeholder="Enter your CodeChef username")
+                leetcode_id = st.text_input("LeetCode ID", placeholder="Enter your LeetCode username")
+                github_id = st.text_input("GitHub ID", placeholder="Enter your GitHub username")
+                codeforces_id = st.text_input("Codeforces ID", placeholder="Enter your Codeforces username")
+            
+            with col2:
+                st.subheader("Additional Information")
+                predefined_colleges = ["MIT", "Stanford", "Harvard", "IIT", "Other"]
+                selected_college = st.selectbox("College/School", predefined_colleges)
+                if selected_college == "Other":
+                    college = st.text_input("Enter your College/School name")
+                else:
+                    college = selected_college
+
+                category = st.selectbox("Category", ["Student", "Professional", "Other"])
+
+        # Submit button
+        if st.button("Create my account"):
+            if username and password and college:
+                # Validate password
+                password_error = is_valid_password(password)
+                if password_error:
+                    st.error(password_error)
+                else:
+                    try:
+                        add_user(username, password, codechef_id, leetcode_id, github_id, codeforces_id, college, category)
+                        st.success("Account created successfully!")
+                    except sqlite3.IntegrityError:
+                        st.error("This username is already registered. Please use a different username.")
+            else:
+                st.error("Username, Password, and College are required!")
+
+    elif option == "Login":
+            # Input fields for login
+            st.subheader("Login")
+            username = st.text_input("Username", placeholder="Enter your username for login")
+            password = st.text_input("Password", placeholder="Enter your password", type="password")
+
+            # Login button
+            if st.button("Login"):
+                if username and password:
+                    user = authenticate_user(username, password)
+                    if user:
+                        st.success(f"Welcome back, {username}!")
+                        st.write("Your Profile Information:")
+                        st.write(f"- **CodeChef ID:** {user[3]}")
+                        st.write(f"- **LeetCode ID:** {user[4]}")
+                        st.write(f"- **GitHub ID:** {user[5]}")
+                        st.write(f"- **Codeforces ID:** {user[6]}")
+                        st.write(f"- **College/School:** {user[7]}")
+                        st.write(f"- **Category:** {user[8]}")
+                    else:
+                        st.error("Invalid username or password.")
+                else:
+                    st.error("Both fields are required!")
 
 if selected == "Dashboard":
 
@@ -575,6 +588,7 @@ if selected == "Dashboard":
         
     else:
         st.write("## Write Your UserName")
+
 if selected == "ATS Detector":
     
     def input_pdf_setup(uploaded_file):
@@ -656,6 +670,7 @@ if selected == "ATS Detector":
                 st.write(response)
             else:
                 st.write("Please uplaod the resume")
+
 if selected == "LinkedIn Profile":
     
     def extract_text_from_pdf(file):
@@ -967,6 +982,7 @@ if selected == "LinkedIn Profile":
                             
         with st.container(border=True):
             pass           
+
 if selected=="1vs1":
     link="https://lottie.host/02515adf-e5f1-41c8-ab4f-8d07af1dcfb8/30KYw8Ui2q.json"
     l=load_lottieurl(link)
@@ -985,18 +1001,19 @@ if selected=="1vs1":
         friends_id = st.multiselect("What is your friend's?", ans, [], placeholder="Select Your Friend's Id")
    
     if your_id and friends_id:
+        
         your_id = list_profiles(your_id[0])
         friends_id = list_profiles(friends_id[0])
-        your_data = get_leetcode_data1(your_id[0])
-        friend_data = get_leetcode_data1(friends_id[0])
-        your_RQuestion=RQuestion(your_id[0], limit=50)
-        friend_RQuestion=RQuestion(friends_id[0], limit=50)
-        your_let_Badges=let_Badges(your_id[0])
-        friend_let_Badges=let_Badges(friends_id[0]) 
-        your_skils=skills(your_id[0])
-        friend_skils=skills(friends_id[0])
-        your_graph=graph(your_id[0])
-        friend_graph=graph(friends_id[0])
+        your_data = get_leetcode_data1(your_id[4])
+        friend_data = get_leetcode_data1(friends_id[4])
+        your_RQuestion=RQuestion(your_id[4], limit=50)
+        friend_RQuestion=RQuestion(friends_id[4], limit=50)
+        your_let_Badges=let_Badges(your_id[4])
+        friend_let_Badges=let_Badges(friends_id[4]) 
+        your_skils=skills(your_id[4])
+        friend_skils=skills(friends_id[4])
+        your_graph=graph(your_id[4])
+        friend_graph=graph(friends_id[4])
         my_df = process_data(your_skils)
         friends_df = process_data(friend_skils)
         link="https://lottie.host/3de1b5f0-49df-47f6-8a9b-21d9830c1810/IxEWj5DLSb.json"
@@ -1130,7 +1147,7 @@ if selected=="1vs1":
                             st.write(f"**{badge['displayName']}**")
                             st.image(badge['medal']['config']["iconGif"], width=100)
             st.header("Graph 📊📈📉",divider=True)
-            data=data=your_graph['matchedUser']['userCalendar']['submissionCalendar']
+            data=your_graph['matchedUser']['userCalendar']['submissionCalendar']
             data = json.loads(data)
             df = pd.DataFrame(list(data.items()), columns=['Timestamp', 'Count'])
             df['Date'] = pd.to_datetime(df['Timestamp'].astype(int), unit='s')
@@ -1292,8 +1309,8 @@ if selected=="1vs1":
             cmap = 'plasma' 
             fig3, ax = calplot.calplot(daily_counts1, cmap=cmap, figsize=(12, 6),colorbar=False)
             st.pyplot(fig3) 
-        codeforce_your=your_id[5]
-        codeforce_friend=friends_id[5]
+        codeforce_your=your_id[6]
+        codeforce_friend=friends_id[6]
         codechef_username_your=your_id[3]
         codechef_username_friend=friends_id[3]
 
@@ -1318,120 +1335,13 @@ if selected=="1vs1":
             st.write(f"**Friend Count:** {data['friendOfCount']}")
             st.write(f"**Contribution:** {data['contribution']}")
 
-
-            st.header("Resume - ATS  Score", divider=True)
-            def input_pdf_setup(uploaded_file):
-                    if uploaded_file is not None:
-                        ## Convert the PDF to image
-                        images=pdf2image.convert_from_bytes(uploaded_file.read())
-                        first_page=images[0]
-                        # Convert to bytes
-                        img_byte_arr = io.BytesIO()
-                        first_page.save(img_byte_arr, format='JPEG')
-                        img_byte_arr = img_byte_arr.getvalue()
-
-                        pdf_parts = [
-                            {
-                                "mime_type": "image/jpeg",
-                                "data": base64.b64encode(img_byte_arr).decode()  # encode to base64
-                            }
-                        ]
-                        return pdf_parts
-                    else:
-                        raise FileNotFoundError("No file uploaded")
-            
-            input_text="""
-                This role is for one of the Weekday's clients
-
-                            We are looking for an experienced AI Engineer with expertise in Generative AI, Llama, Natural Language Processing (NLP), and Large Language Models (LLMs) to join our engineering team. In this role, you will contribute to innovative AI projects, building advanced solutions that harness the potential of cutting-edge AI technologies to drive meaningful business impact.
-
-                            As an AI Engineer, you will work alongside cross-functional teams to develop and scale AI-driven systems and engage in research and implementation of the latest AI algorithms.
-
-                            Key Responsibilities
-
-                            Develop and implement AI solutions using Generative AI, Llama, NLP, and LLM technologies.
-                            Design and fine-tune AI models for optimal performance, scalability, and accuracy.
-                            Keep up-to-date with the latest advancements in AI and apply them to address real-world challenges.
-                            Collaborate with data scientists, software engineers, and other teams to integrate AI models into production environments.
-                            Conduct experiments, evaluate model performance, and implement improvements based on results.
-                            Document AI research and implementation processes for knowledge sharing and maintainability.
-
-                            Required Skills & Experience
-
-                            Demonstrated experience with Generative AI, Llama, NLP, and LLMs.
-                            Strong programming skills in Python and experience with machine learning frameworks like TensorFlow, PyTorch, or Hugging Face.
-                            Proficiency in training, fine-tuning, and deploying large-scale AI models.
-                            Solid understanding of neural networks, deep learning, and model evaluation techniques.
-                            Excellent problem-solving skills and the ability to thrive in a dynamic, fast-paced environment.
-
-                            Preferred Qualifications
-
-                            Experience with cloud-based AI platforms such as AWS or GCP.
-                            Familiarity with additional AI frameworks and libraries.
-                            Previous experience in research or product-oriented AI roles.
-
-                            Skills: python,large language models (llms),nlp,generative ai,hugging face,tensorflow,aws,pytorch,llama,natural language processing,natural language processing (nlp),algorithms
-
-            """ 
-            uploaded_file=st.file_uploader("Upload your resume (PDF)",type=["pdf"])
-            st.write(uploaded_file)
-            if uploaded_file is not None:
-                st.write("PDF Uploaded Successfully")
-                
-            col1, col2 ,col3,clo4= st.columns([2,2.5,2,2])  # Create two columns
-            with col1:
-                pass
-            with col2:
-                    
-                    submit1 = st.button("Tell Me About the Resume",type="primary", help="Know your resume",use_container_width=True)
-            with col3:
-                    submit3 = st.button("Percentage match",type="primary", help="Percentage match",use_container_width=True)
-            with clo4:
-                   pass
-
-                #submit2 = st.button("How Can I Improvise my Skills")
-
-                
-
-            input_prompt1 = """
-                You are an experienced Technical Human Resource Manager,your task is to review the provided resume against the job description. 
-                Please share your professional evaluation on whether the candidate's profile aligns with the role. 
-                Highlight the strengths and weaknesses of the applicant in relation to the specified job requirements.
-                """
-
-            input_prompt3 = """
-                You are an skilled ATS (Applicant Tracking System) scanner with a deep understanding of data science and ATS functionality, 
-                your task is to evaluate the resume against the provided job description. give me the percentage of match if the resume matches
-                the job description. First the output should come as percentage and then keywords missing and last final thoughts.
-                """
-
-            if submit1:
-                    if uploaded_file is not None:
-                        pdf_content=input_pdf_setup(uploaded_file)
-                        response=get_gemini_response1(input_prompt1,pdf_content,input_text)
-                        st.subheader("The Repsonse is")
-                        st.write(response)
-                    else:
-                        st.write("Please uplaod the resume")
-
-            elif submit3:
-                    if uploaded_file is not None:
-                        pdf_content=input_pdf_setup(uploaded_file)
-                        response=get_gemini_response1(input_prompt3,pdf_content,input_text)
-                        st.subheader("The Repsonse is")
-                        st.write(response)
-                    else:
-                        st.write("Please uplaod the resume")
-
-
-
             
         with midle:
             st.markdown("""
             <style>
             .vertical-line {
                 border-left: 2px solid black;
-                height: 3200px;
+                height: 1900px;
             }
             </style>
 
@@ -1456,258 +1366,7 @@ if selected=="1vs1":
             # Display Friend Count and Contribution
             st.write(f"**Friend Count:** {data['friendOfCount']}")
             st.write(f"**Contribution:** {data['contribution']}")
-if selected == "Resume Builder":
-    recognizer = sr.Recognizer()
-    current_dir = Path(__file__).parent if "__file__" in locals() else Path.cwd()
-    css_file = current_dir / "styles" / "main.css"
-    resume_file = current_dir / "assets" / "CV.pdf"
-    profile_pic = current_dir / "assets" / "profile-pic.png"
-    PAGE_TITLE = "Digital CV | K Sree Charan"
-    NAME = "K Sree Charan"
-    DESCRIPTION = """
-    Senior Data Analyst, assisting enterprises by supporting data-driven decision-making.
-    """
-    EMAIL = "Sreecharan9484@gmail.com"
-    SOCIAL_MEDIA = {
-        "CGPA": "https://www.youtube.com/channel/UCPxjJHozO16AfjRV6_bGxew",
-        "LinkedIn": "https://www.linkedin.com/in/sree9484/",
-        "GitHub": "https://github.com/SreeCharan1234",
-        "PhoneNO": "9958389484",
-        }
-    PROJECTS = {
-        "🏆 Sales Dashboard - Comparing sales across three stores": "https://youtu.be/Sb0A9i6d320",
-        "🏆 Income and Expense Tracker - Web app with NoSQL database": "https://youtu.be/3egaMfE9388",
-        "🏆 Desktop Application - Excel2CSV converter with user settings & menubar": "https://youtu.be/LzCfNanQ_9c",
-        "🏆 MyToolBelt - Custom MS Excel add-in to combine Python & Excel": "https://pythonandvba.com/mytoolbelt/",
-    }
-
-    with open(css_file) as f:
-                st.markdown("<style>{}</style>".format(f.read()), unsafe_allow_html=True)
-    with open(resume_file, "rb") as pdf_file:
-                PDFbyte = pdf_file.read()
-
-    link="https://lottie.host/2fb5087d-7339-4354-8aae-e3434084d3dc/m39YcukvGP.json"
-    l=load_lottieurl(link)
-    
-    col1, col2 = st.columns([1.3,9])  # Create two columns
-    with col1:
-        st.lottie(l, height=100, width=100)
-    with col2:
-        st.header(f":rainbow[Resume Builder]👧👦", divider='rainbow')
-    with st.container(border=True):
-        st.header("Personal Information")
-        col1, col2 = st.columns(2)
-        with col1:
-            first_name = st.text_input("First Name")
-            EMAIL = st.text_input("Email")
-            phone = st.text_input("Phone Number")
-            github=st.text_input("Github profile")
-        SOCIAL_MEDIA['GitHub']=github
-        with col2:
-            last_name = st.text_input("Last Name")
-            address = st.text_input("Address")
-            linkedin_url = st.text_input("LinkedIn Profile URL")
-            CGPA=st.text_input("CPGA : ")
-        SOCIAL_MEDIA['LinkedIn']=linkedin_url
-        SOCIAL_MEDIA['PhoneNO']=phone
-        SOCIAL_MEDIA['CGPA']=phone
-            
-        NAME=first_name+last_name
-        
-        summary = st.text_area("Summary")
-        if summary and ("//" in summary):
-            summary="breif desprion of a student for his resume like this format "+"and it should be very short that is only line only 5-7 words this the little bit information about the student"+summary
-            summary=get_gemini_response(summary)
-    with st.container(border=True):
-        st.header("Employment History")
-        job_title = st.text_input("Job Title")
-        
-        col3, col4 = st.columns(2)
-        
-        with col3:
-            job_start_date = st.date_input("Start Date", datetime.date.today())
-            job_city = st.text_input("City")
-        
-        with col4:
-            job_end_date = st.date_input("End Date",datetime.date.today())
-            company_name = st.text_input("Company Name")
-        
-        job_description = st.text_area("Job Description")
-    with st.container(border=True):
-        st.header("Projects")
-        
-        projects= st.text_input("Name of the project")
-        col8 , clo9 =st.columns(2)
-        with col8:
-            edu_start_date = st.date_input("Start_Date", datetime.date.today())
-            
-        with clo9:
-            edu_end_date = st.date_input("completed ", datetime.date.today())
-        project_explain = st.text_area("Explain your Project :  ") 
-    with st.container(border=True):
-        st.header("Education")
-        school = st.text_input("School")
-        degree = st.text_input("Degree")
-        
-        col5, col6 = st.columns(2)
-        
-        with col5:
-            edu_start_date = st.date_input("StartDate", datetime.date.today())
-            edu_city = st.text_input("City.")
-        
-        with col6:
-            edu_end_date = st.date_input("End-Date", datetime.date.today())
-            major = st.text_input("Major")
-            
-        
-    with st.container(border=True):
-        st.header("Skills")
-        skill1 = st.selectbox("Skill 1", ["None","Python", "JavaScript", "SQL", "Java", "C++"])
-        skill1_rating = create_rating_dropdown("Rating for Skill 1")
-        
-        skill2 = st.selectbox("Skill 2", ["None","Python", "JavaScript", "SQL", "Java", "C++"])
-        skill2_rating = create_rating_dropdown("Rating for Skill 2")
-        
-        skill3 = st.selectbox("Skill 3", ["None","Python", "JavaScript", "SQL", "Java", "C++"])
-        skill3_rating = create_rating_dropdown("Rating for Skill 3")
-    with st.container(border=True):
-        a,b,c=st.columns(3)
-        profile_pic1 = Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\r1.jpg")
-        profile_pic4 = Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\r4.jpg")
-        with a:
-            
-            st.image(profile_pic1, width=230)
-            st.button("TEMPLATE 1")
-            st.image(profile_pic4, width=230)
-            st.button("TEMPLATE 4 ")
-            
-
-        with b:
-            profile_pic2 = Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\r2.jpg")
-            profile_pic5 = Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\r3.jpg")
-            
-            st.image(profile_pic4, width=230)
-            st.button("TEMPLATE 2")
-            st.image(profile_pic5, width=230)
-            st.button("TEMPLATE 5")
-
-        with c:
-            #profile_pic = Image.open(profile_pic)
-            profile_pic3 = Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\r3.jpg")
-            profile_pic6 = Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\r1.jpg")
-            st.image(profile_pic3, width=230)
-            st.button("TEMPLATE 3")
-            st.image(profile_pic6, width=230)
-            st.button("TEMPLATE 6")
-
-        
-    if st.button("Submit"):
-        
-# --- PATH SETTINGS ---
-        
-        
-
-
-        # --- HERO SECTION ---
-        col1, col2 = st.columns(2, gap="small")
-        with col1:
-
-            st.image(Image.open(r"C:\Users\sreec\OneDrive\Desktop\projects\StudyBuudy(Python)\pages\assets\profile-pic.png" ), width=230)
-
-        with col2:
-            st.title(NAME)
-            st.write(summary)
-            st.download_button(
-                label=" 📄 Download Resume",
-                data=PDFbyte,
-                file_name=resume_file.name,
-                mime="application/octet-stream",
-            )
-            st.write("📫", EMAIL)
-
-
-        # --- SOCIAL LINKS ---
-        st.write('\n')
-        cols = st.columns(len(SOCIAL_MEDIA))
-        for index, (platform, link) in enumerate(SOCIAL_MEDIA.items()):
-            cols[index].write(f"[{platform}]({link})")
-
-
-
-
-
-        st.success("Resume data submitted successfully!")
-        st.write('\n')
-        st.subheader("Experience & Qualification")
-        st.write(
-            """
-        - ✔️ 7 Years expereince extracting actionable insights from data
-        - ✔️ Strong hands on experience and knowledge in Python and Excel
-        - ✔️ Good understanding of statistical principles and their respective applications
-        - ✔️ Excellent team-player and displaying strong sense of initiative on tasks
-        """
-        )
-
-
-        # --- SKILLS ---
-        st.write('\n')
-        st.subheader("Hard Skills")
-        st.write(
-            """
-        - 👩‍💻 Programming: Python (Scikit-learn, Pandas), SQL, VBA
-        - 📊 Data Visulization: PowerBi, MS Excel, Plotly
-        - 📚 Modeling: Logistic regression, linear regression, decition trees
-        - 🗄️ Databases: Postgres, MongoDB, MySQL
-        """
-        )
-
-
-        # --- WORK HISTORY ---
-        st.write('\n')
-        st.subheader("Work History")
-        st.write("---")
-
-        # --- JOB 1
-        st.write("🚧", "**Senior Data Analyst | Ross Industries**")
-        st.write("02/2020 - Present")
-        st.write(
-            """
-        - ► Used PowerBI and SQL to redeﬁne and track KPIs surrounding marketing initiatives, and supplied recommendations to boost landing page conversion rate by 38%
-        - ► Led a team of 4 analysts to brainstorm potential marketing and sales improvements, and implemented A/B tests to generate 15% more client leads
-        - ► Redesigned data model through iterations that improved predictions by 12%
-        """
-        )
-
-        # --- JOB 2
-        st.write('\n')
-        st.write("🚧", "**Data Analyst | Liberty Mutual Insurance**")
-        st.write("01/2018 - 02/2022")
-        st.write(
-            """
-        - ► Built data models and maps to generate meaningful insights from customer data, boosting successful sales eﬀorts by 12%
-        - ► Modeled targets likely to renew, and presented analysis to leadership, which led to a YoY revenue increase of $300K
-        - ► Compiled, studied, and inferred large amounts of data, modeling information to drive auto policy pricing
-        """
-        )
-
-        # --- JOB 3
-        st.write('\n')
-        st.write("🚧", "**Data Analyst | Chegg**")
-        st.write("04/2015 - 01/2018")
-        st.write(
-            """
-        - ► Devised KPIs using SQL across company website in collaboration with cross-functional teams to achieve a 120% jump in organic traﬃc
-        - ► Analyzed, documented, and reported user survey results to improve customer communication processes by 18%
-        - ► Collaborated with analyst team to oversee end-to-end process surrounding customers' return data
-        """
-        )
-
-
-        # --- Projects & Accomplishments ---
-        st.write('\n')
-        st.subheader("Projects & Accomplishments")
-        st.write("sdfs")
-        st.write("---")
-
-
-                
+       
+if selected=="collage":
+    ans=listofcollege()
+    your_id = st.multiselect("What is your ?", ans, [], placeholder="Select Your's Id")  
