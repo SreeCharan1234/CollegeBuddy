@@ -4,16 +4,9 @@
 * {font-family: 'Readex Pro';}
 
 
-a {
-    text-decoration: none;
-    color: white !important;
-    font-weight: 500;
-}
 
-a:hover {
-    color: #55d336 !important;
-    text-decoration: none;
-}
+
+
 body {
     background-image: linear-gradient(to right, #f06b6b, #ffdb58);
     background-size: 100% 100%;

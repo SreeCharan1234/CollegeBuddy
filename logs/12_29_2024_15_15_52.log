@@ -1,0 +1,64 @@
+[2024-12-29 15:14:44,160] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:14:44,182] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:14:44,263] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:14:44,433] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:14:44,434] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:14:44,544] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:14:44,829] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:14:44,830] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:14:44,830] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:14:44,904] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:14:44,906] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:14,082] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:14,091] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:14,199] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:14,200] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:14,375] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:14,376] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:14,378] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:15,982] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:15,982] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:16,034] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:16,034] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:16,146] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:16,146] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 15:17:16,147] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 16:07:46,669] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 16:07:46,679] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 16:07:46,713] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 16:07:47,065] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 16:07:47,067] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 16:07:47,146] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 16:07:47,444] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 16:07:47,444] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 16:07:47,446] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 16:07:47,530] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 16:07:47,530] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:13:51,749] 103 streamlit_webrtc.webrtc - INFO - Track audio received
+[2024-12-29 18:13:51,761] 148 streamlit_webrtc.webrtc - INFO - Add a track <aiortc.rtcrtpreceiver.RemoteStreamTrack object at 0x0000021112F4C620> of kind audio to <aiortc.rtcpeerconnection.RTCPeerConnection object at 0x0000021112769F40>
+[2024-12-29 18:13:51,763] 103 streamlit_webrtc.webrtc - INFO - Track video received
+[2024-12-29 18:13:51,763] 148 streamlit_webrtc.webrtc - INFO - Add a track <aiortc.rtcrtpreceiver.RemoteStreamTrack object at 0x0000021112F7C6E0> of kind video to <aiortc.rtcpeerconnection.RTCPeerConnection object at 0x0000021112769F40>
+[2024-12-29 18:13:51,824] 1114 aioice.ice - INFO - Connection(0) Could not bind to 169.254.211.164 - [WinError 10049] The requested address is not valid in its context
+[2024-12-29 18:13:51,826] 1114 aioice.ice - INFO - Connection(0) Could not bind to 172.16.26.15 - [WinError 10049] The requested address is not valid in its context
+[2024-12-29 18:13:51,827] 1114 aioice.ice - INFO - Connection(0) Could not bind to 169.254.255.111 - [WinError 10049] The requested address is not valid in its context
+[2024-12-29 18:13:51,828] 1114 aioice.ice - INFO - Connection(0) Could not bind to 169.254.59.57 - [WinError 10049] The requested address is not valid in its context
+[2024-12-29 18:13:51,836] 1114 aioice.ice - INFO - Connection(0) Could not bind to 169.254.197.227 - [WinError 10049] The requested address is not valid in its context
+[2024-12-29 18:13:52,328] 1114 aioice.ice - INFO - Connection(0) Check CandidatePair(('10.10.9.28', 52909) -> ('10.10.9.28', 63017)) State.FROZEN -> State.WAITING
+[2024-12-29 18:13:52,339] 520 streamlit_webrtc.webrtc - INFO - ICE connection state is checking
+[2024-12-29 18:13:52,341] 1114 aioice.ice - INFO - Connection(0) Check CandidatePair(('10.10.9.28', 52909) -> ('10.10.9.28', 63017)) State.WAITING -> State.IN_PROGRESS
+[2024-12-29 18:13:59,418] 1114 aioice.ice - INFO - Connection(0) Check CandidatePair(('10.10.9.28', 52909) -> ('10.10.9.28', 63017)) State.IN_PROGRESS -> State.SUCCEEDED
+[2024-12-29 18:14:00,771] 520 streamlit_webrtc.webrtc - INFO - ICE connection state is closed
+[2024-12-29 18:16:29,390] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:29,394] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:29,473] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:29,474] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:29,670] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:29,675] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:29,676] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:33,152] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:33,154] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:33,258] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:33,258] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:33,440] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:33,440] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.
+[2024-12-29 18:16:33,440] 1371 matplotlib.font_manager - WARNING - findfont: Font family 'Helvetica' not found.

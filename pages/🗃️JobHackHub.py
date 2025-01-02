@@ -107,7 +107,7 @@ def hactkon():
 
         # Find cards containing hackathon details
         card_elements = soup.find_all('div', class_='card')  # Assuming card structure
-
+        
         for card in card_elements:
         # Extract data from within each card
             name_element = card.find('div', class_='card-body')  # Customize selector if needed
@@ -146,7 +146,7 @@ if selected == "Hackthons":
 
         # Column 1: Image
         with col1:
-            st.image(hackathon["image_url"], use_column_width=True)
+            st.image(hackathon["image_url"], use_container_width=True)
 
         # Column 2: Details
         with col2:

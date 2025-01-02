@@ -155,16 +155,9 @@ def to_markdown(text):
   text = text.replace('•', '  *')
   return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
 def get_transcript(video_url):
-
-  
   video_id = video_url.split("=")[1]
-
-  
-  transcript_api = YouTubeTranscriptApi()
-
-  
+  transcript_api = YouTubeTranscriptApi() 
   transcript = transcript_api.get_transcript(video_id)
-
   return transcript
 def pseudo_bold(text):
     bold_text = ''.join(chr(0x1D5D4 + ord(c) - ord('A')) if 'A' <= c <= 'Z' else
@@ -273,7 +266,8 @@ def main():
             col1, col2 = st.columns([1,1])
         with col1:
             with st.form("user_inputs"):
-                text = st.multiselect("Which topic you want to practice ",interview_topics,[],placeholder="Choose the topic")
+                
+                text = st.text_input("Which topic you want to learn",placeholder="Enter the topic")
                 video_link = st.text_input(" Enter the video link",placeholder="Enter the url")    
                 uploaded_file = st.file_uploader("Upload a PDF or txt file")
                 mcq_count = 5
