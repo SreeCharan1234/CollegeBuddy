@@ -30,7 +30,9 @@ import sys
 import io
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
 from youtube_transcript_api import YouTubeTranscriptApi
+from util.common import get_gemini_response,get_leetcode_data,get_gemini_response1,load_lottieurl
 import time
+
 global s
 k=0
 genai.configure(api_key=os.getenv("API-KEY"))
@@ -118,10 +120,9 @@ def input_pdf_setup(uploaded_file):
             return pdf_parts
         else:
             raise FileNotFoundError("No file uploaded")
-def get_gemini_response1(input,pdf_cotent,prompt):
-    model=genai.GenerativeModel('gemini-1.5-flash')
-    response=model.generate_content([input,pdf_content[0],prompt])
-    return response.text
+
+
+
 def example():
     rain(
         emoji="*",
@@ -129,15 +130,7 @@ def example():
         falling_speed=7,
         animation_length="infinite",
     )
-def get_gemini_response(question):
-    model = genai.GenerativeModel('gemini-pro')
-    response = model.generate_content(question)
-    return response.text
-def load_lottieurl(url: str):
-        r = requests.get(url)
-        if r.status_code != 200:
-            return None
-        return r.json() 
+
 def recognize_speech_from_microphone():
     with sr.Microphone() as source:
         while is_listening:
@@ -151,9 +144,7 @@ def recognize_speech_from_microphone():
                 st.error("Google Speech Recognition could not understand audio")
             except sr.RequestError as e:
                 st.error(f"Could not request results from Google Speech Recognition service; {e}")
-def to_markdown(text):
-  text = text.replace('•', '  *')
-  return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
+
 def get_transcript(video_url):
   video_id = video_url.split("=")[1]
   transcript_api = YouTubeTranscriptApi() 
@@ -164,6 +155,8 @@ def pseudo_bold(text):
                         chr(0x1D5EE + ord(c) - ord('a')) if 'a' <= c <= 'z' else c
                         for c in text)
     return bold_text
+
+
 def streamlit_menu(example=1):
     if example == 1:
         with st.sidebar:
@@ -445,6 +438,7 @@ def main():
 selected = streamlit_menu(example=EXAMPLE_NO)
 if 'questions' not in st.session_state:
     st.session_state.questions = []
+
 if selected == "Road Map":
     example()
     link="https://lottie.host/76509b4e-81b1-4877-9974-1fa506b294b1/ja7bfvhaEb.json"
@@ -506,6 +500,7 @@ if selected == "Road Map":
             
             s=get_gemini_response(s)
             st.write(s)
+
 if selected=="Code Editor": 
     
     link="https://lottie.host/d6e55231-a53c-4d19-a142-d71320fcd9a7/hbFKIhu1KA.json"
@@ -623,6 +618,7 @@ sum_of_list([5,3,4,4])"""
         editor_content = st_ace(value=str(s), language='python', theme='monokai', keybinding='vscode', font_size=14)
     
     st.write(s)
+
 if selected== "Mock Interview":
     main()
 

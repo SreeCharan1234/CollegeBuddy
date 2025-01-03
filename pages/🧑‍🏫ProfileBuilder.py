@@ -31,7 +31,6 @@ from streamlit_option_menu import option_menu
 from streamlit_extras.mandatory_date_range import date_range_picker
 import datetime
 import os
-import textwrap
 import google.generativeai as genai
 import matplotlib.pyplot as plt
 from IPython.display import display
@@ -41,15 +40,27 @@ from streamlit_lottie import st_lottie
 import requests 
 import sys
 import io
-from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
-from youtube_transcript_api import YouTubeTranscriptApi
 import time
-import mysql.connector
 import plotly.graph_objects as go
-from util.leetcode import get_leetcode_data1, RQuestion, skills, let_Badges, graph
+from util.common import get_gemini_response,get_leetcode_data,get_gemini_response1,load_lottieurl
+from util.leetcode import get_leetcode_data1, RQuestion, skills, let_Badges, graph,get_active_days_for_users,get_active_days,get_ratings_for_users,get_leetcode_contest_rating
 from util.codeforces import get_user_data, get_contest_data
 from util.github import run_gitleaks, count_lines_of_code, clone_and_count_lines, is_repo_processed, get_all_user_repos, update_progress_file
-from util.login import create_table, add_user, authenticate_user, is_valid_password,listofuser,list_profiles,listofcollege
+from util.login import  add_user, authenticate_user, is_valid_password,listofuser,list_profiles,listofcollege,totalusers
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import db
+
+import time
+
+if not firebase_admin._apps:
+    cred = credentials.Certificate("a.json")
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': "https://profile-data-dde0a-default-rtdb.firebaseio.com/"
+    })
+    db = firestore.client() 
+# Replace with your Firebase project credentials (service account key JSON file)
+
 global s
 k=0
 api_key=os.getenv("API-KEY")
@@ -66,80 +77,6 @@ st.set_page_config(page_title="KnowledgeBuilder", page_icon='src/Logo College.pn
 if "current_theme" not in st.session_state:
     st.session_state.current_theme = "light"
 
-def get_leetcode_data(username):
-    url = "https://leetcode.com/graphql"
-    query = """
-    query getLeetCodeData($username: String!) {
-      userProfile: matchedUser(username: $username) {
-        username
-        profile {
-          userAvatar
-          reputation
-          ranking
-        }
-        submitStats {
-          acSubmissionNum {
-            difficulty
-            count
-          }
-          totalSubmissionNum {
-            difficulty
-            count
-          }
-        }
-      }
-      userContestRanking(username: $username) {
-        attendedContestsCount
-        rating
-        globalRanking
-        totalParticipants
-        topPercentage
-      }
-      recentSubmissionList(username: $username) {
-        title
-        statusDisplay
-        lang
-      }
-      matchedUser(username: $username) {
-        languageProblemCount {
-          languageName
-          problemsSolved
-        }
-      }
-      recentAcSubmissionList(username: $username, limit: 15) {
-            id
-            title
-            titleSlug
-            timestamp
-          }
-     
-    }
-    
-    """
-    variables = {
-        "username": username
-    }
-    response = requests.post(url, json={'query': query, 'variables': variables})
-    data = response.json()
-
-    if 'errors' in data:
-        print("Error:", data['errors'])
-        return None
-
-    return data['data']
-def get_gemini_response1(input,pdf_cotent,prompt):
-    model=genai.GenerativeModel('gemini-1.5-flash')
-    response=model.generate_content([input,pdf_content[0],prompt])
-    return response.text
-def get_gemini_response(question):
-    model = genai.GenerativeModel('gemini-pro')
-    response = model.generate_content(question)
-    return response.text
-def load_lottieurl(url: str):
-        r = requests.get(url)
-        if r.status_code != 200:
-            return None
-        return r.json() 
 def process_data(data):
     rows = []
     for category, topics in data.items():
@@ -148,8 +85,6 @@ def process_data(data):
                 {"Category": category.capitalize(), "Topic": topic["tagName"], "Problems Solved": topic["problemsSolved"]}
             )
     return pd.DataFrame(rows)
-
-
 def streamlit_menu(example=1):
     if example == 1:
         with st.sidebar:
@@ -171,74 +106,74 @@ if 'questions' not in st.session_state:
 
 if selected == "Register":
     global username
-    create_table()
-    st.title("Access")
-    option = st.selectbox("Login/Signup", ["Sign up", "Login"])
+    with st.container(border=True): 
+        st.title("Login / Signup")
+        option = st.selectbox("Login/Signup/Update", ["Sign up", "Login","Update"])
+    
+        if option == "Sign up":
+                # Input fields
+                username = st.text_input("Username", placeholder="Enter your username (must be unique)")
+                password = st.text_input("Password", placeholder="Enter your password", type="password")
+                with st.container():
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.subheader("Profile Information")
+                        codechef_id = st.text_input("CodeChef ID", placeholder="Enter your CodeChef username")
+                        leetcode_id = st.text_input("LeetCode ID", placeholder="Enter your LeetCode username")
+                        github_id = st.text_input("GitHub ID", placeholder="Enter your GitHub username")
+                        codeforces_id = st.text_input("Codeforces ID", placeholder="Enter your Codeforces username")
+                    
+                    with col2:
+                        st.subheader("Additional Information")
+                        predefined_colleges = ["LPU","MIT", "Stanford", "Harvard", "IIT", "Other"]
+                        selected_college = st.selectbox("College/School", predefined_colleges)
+                        if selected_college == "Other":
+                            college = st.text_input("Enter your College/School name")
+                        else:
+                            college = selected_college
 
-    if option == "Sign up":
-        # Input fields
-        username = st.text_input("Username", placeholder="Enter your username (must be unique)")
-        password = st.text_input("Password", placeholder="Enter your password", type="password")
-        with st.container():
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                st.subheader("Profile Information")
-                codechef_id = st.text_input("CodeChef ID", placeholder="Enter your CodeChef username")
-                leetcode_id = st.text_input("LeetCode ID", placeholder="Enter your LeetCode username")
-                github_id = st.text_input("GitHub ID", placeholder="Enter your GitHub username")
-                codeforces_id = st.text_input("Codeforces ID", placeholder="Enter your Codeforces username")
-            
-            with col2:
-                st.subheader("Additional Information")
-                predefined_colleges = ["MIT", "Stanford", "Harvard", "IIT", "Other"]
-                selected_college = st.selectbox("College/School", predefined_colleges)
-                if selected_college == "Other":
-                    college = st.text_input("Enter your College/School name")
-                else:
-                    college = selected_college
+                        category = st.selectbox("Category", ["Student", "Professional", "Other"])
 
-                category = st.selectbox("Category", ["Student", "Professional", "Other"])
-
-        # Submit button
-        if st.button("Create my account"):
-            if username and password and college:
-                # Validate password
-                password_error = is_valid_password(password)
-                if password_error:
-                    st.error(password_error)
-                else:
-                    try:
-                        add_user(username, password, codechef_id, leetcode_id, github_id, codeforces_id, college, category)
-                        st.success("Account created successfully!")
-                    except sqlite3.IntegrityError:
-                        st.error("This username is already registered. Please use a different username.")
-            else:
-                st.error("Username, Password, and College are required!")
-
-    elif option == "Login":
-            # Input fields for login
-            st.subheader("Login")
-            username = st.text_input("Username", placeholder="Enter your username for login")
-            password = st.text_input("Password", placeholder="Enter your password", type="password")
-
-            # Login button
-            if st.button("Login"):
-                if username and password:
-                    user = authenticate_user(username, password)
-                    if user:
-                        st.success(f"Welcome back, {username}!")
-                        st.write("Your Profile Information:")
-                        st.write(f"- **CodeChef ID:** {user[3]}")
-                        st.write(f"- **LeetCode ID:** {user[4]}")
-                        st.write(f"- **GitHub ID:** {user[5]}")
-                        st.write(f"- **Codeforces ID:** {user[6]}")
-                        st.write(f"- **College/School:** {user[7]}")
-                        st.write(f"- **Category:** {user[8]}")
+                # Submit button
+                if st.button("Create my account"):
+                    if username and password and college:
+                        # Validate password
+                        password_error = is_valid_password(password)
+                        if password_error:
+                            st.error(password_error)
+                        else:
+                            try:
+                                add_user(username, password, codechef_id, leetcode_id, github_id, codeforces_id, college, category,db)
+                                st.success("Account created successfully!")
+                            except sqlite3.IntegrityError:
+                                st.error("This username is already registered. Please use a different username.")
                     else:
-                        st.error("Invalid username or password.")
-                else:
-                    st.error("Both fields are required!")
+                        st.error("Username, Password, and College are required!")
+
+        elif option == "Login":
+                    # Input fields for login
+                    st.subheader("Login")
+                    username = st.text_input("Username", placeholder="Enter your username for login")
+                    password = st.text_input("Password", placeholder="Enter your password", type="password")
+
+                    # Login button
+                    if st.button("Login"):
+                        if username and password:
+                            user = authenticate_user(username, password)
+                            if user:
+                                st.success(f"Welcome back, {username}!")
+                                st.write("Your Profile Information:")
+                                st.write(f"- **CodeChef ID:** {user[3]}")
+                                st.write(f"- **LeetCode ID:** {user[4]}")
+                                st.write(f"- **GitHub ID:** {user[5]}")
+                                st.write(f"- **Codeforces ID:** {user[6]}")
+                                st.write(f"- **College/School:** {user[7]}")
+                                st.write(f"- **Category:** {user[8]}")
+                            else:
+                                st.error("Invalid username or password.")
+                        else:
+                            st.error("Both fields are required!")
 
 if selected == "Dashboard":
 
@@ -992,7 +927,7 @@ if selected=="1vs1":
     with col2:
             st.header(f":rainbow[Compare with your friend]👧👦", divider='rainbow')
 
-    ans=listofuser()
+    ans=listofuser(db)
     left,right=st.columns(2)
     your_id,friends_id="",""
     with left:
@@ -1002,18 +937,19 @@ if selected=="1vs1":
    
     if your_id and friends_id:
         
-        your_id = list_profiles(your_id[0])
-        friends_id = list_profiles(friends_id[0])
-        your_data = get_leetcode_data1(your_id[4])
-        friend_data = get_leetcode_data1(friends_id[4])
-        your_RQuestion=RQuestion(your_id[4], limit=50)
-        friend_RQuestion=RQuestion(friends_id[4], limit=50)
-        your_let_Badges=let_Badges(your_id[4])
-        friend_let_Badges=let_Badges(friends_id[4]) 
-        your_skils=skills(your_id[4])
-        friend_skils=skills(friends_id[4])
-        your_graph=graph(your_id[4])
-        friend_graph=graph(friends_id[4])
+        your_id = list_profiles(your_id[0],db)
+        friends_id = list_profiles(friends_id[0],db)
+      
+        your_data = get_leetcode_data1(your_id[5])
+        friend_data = get_leetcode_data1(friends_id[5])
+        your_RQuestion=RQuestion(your_id[5], limit=50)
+        friend_RQuestion=RQuestion(friends_id[5], limit=50)
+        your_let_Badges=let_Badges(your_id[5])
+        friend_let_Badges=let_Badges(friends_id[5]) 
+        your_skils=skills(your_id[5])
+        friend_skils=skills(friends_id[5])
+        your_graph=graph(your_id[5])
+        friend_graph=graph(friends_id[5])
         my_df = process_data(your_skils)
         friends_df = process_data(friend_skils)
         link="https://lottie.host/3de1b5f0-49df-47f6-8a9b-21d9830c1810/IxEWj5DLSb.json"
@@ -1309,10 +1245,10 @@ if selected=="1vs1":
             cmap = 'plasma' 
             fig3, ax = calplot.calplot(daily_counts1, cmap=cmap, figsize=(12, 6),colorbar=False)
             st.pyplot(fig3) 
-        codeforce_your=your_id[6]
-        codeforce_friend=friends_id[6]
-        codechef_username_your=your_id[3]
-        codechef_username_friend=friends_id[3]
+        codeforce_your=your_id[2]
+        codeforce_friend=friends_id[2]
+        codechef_username_your=your_id[1]
+        codechef_username_friend=friends_id[1]
 
 
 
@@ -1368,5 +1304,24 @@ if selected=="1vs1":
             st.write(f"**Contribution:** {data['contribution']}")
        
 if selected=="collage":
-    ans=listofcollege()
-    your_id = st.multiselect("What is your ?", ans, [], placeholder="Select Your's Id")  
+    ans=listofcollege(db)
+    your_id = st.multiselect("which Collage ?", ans, [], placeholder="Select Your's Id")  
+    
+    if your_id:
+        usernames=totalusers(your_id[0],4)
+        user_ratings = get_ratings_for_users(usernames)
+        st.write(user_ratings)
+        for user, rating in user_ratings.items():
+            if rating is not None:
+                st.write(f"{user}'s contest rating: {rating}")
+            else:
+                st.write(f"Could not retrieve contest rating for {user}")
+        active_days_list = get_active_days_for_users(usernames)
+
+        if active_days_list:
+            for username, days in active_days_list:
+                st.write(f"{username}: {days} active days in 2024")
+        else:
+            st.write("Error fetching active days for some users.")
+
+
