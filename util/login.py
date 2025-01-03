@@ -1,4 +1,7 @@
 # Function to insert data into the database
+from firebase_admin import db
+
+
 def add_user(username, password, codechef_id, leet_id, github_id, codeforces_id, college, category,db):
     
     try:
@@ -99,20 +102,12 @@ def list_profiles(username,db): #rt for real time database
 
 def listofcollege(db):
     users_ref = db.reference('users')
-
-    # Fetch all data under 'users'
     users_data = users_ref.get()
-
-    # Extract list of colleges
     colleges = set()
     for user_id, user_data in users_data.items():
         if 'college' in user_data:
-            colleges.add(user_data['college'])
-
-    # Convert set to list and print
-    
+            colleges.add(user_data['college'])    
     return list(colleges)
-
 
 
 def totalusers(college_name,n):

@@ -12,10 +12,7 @@ firebase_admin.initialize_app(cred, {
     'databaseURL': "https://profile-data-dde0a-default-rtdb.firebaseio.com/"  # Replace with your database URL
 })
 
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import db
-import csv
+
 
 def create_user(username, password, codechef_id, leet_id, github_id, codeforces_id, college, category):
     
@@ -57,7 +54,7 @@ def insert_users_from_input(users_data):
 #     insert_users_from_input([["TUHID", "Sree@1234", "sreecharan9484", "sreecharan9484", "SreeCharan1234", "sreecharan9484","LPU","Student"]])
 #     print("Finished inserting users.")
 
-
+create_user("a","a","a","a","a","a","a","a")
 def list_profiles(username): #rt for real time database
     """Retrieves a user profile from the Realtime Database based on username."""
     try:
@@ -107,18 +104,11 @@ authenticate_user("Sree Charan" ,"Sree@1234")
 #print(list_profiles("Sree Charan"))
 def listofcollege(db):
     users_ref = db.reference('users')
-
-    # Fetch all data under 'users'
     users_data = users_ref.get()
-
-    # Extract list of colleges
     colleges = set()
     for user_id, user_data in users_data.items():
         if 'college' in user_data:
             colleges.add(user_data['college'])
+        return list(colleges)
 
-    # Convert set to list and print
-    
-    return list(colleges)
-
-print("List of Colleges:", colleges_list)
+print("List of Colleges:", listofcollege(db))

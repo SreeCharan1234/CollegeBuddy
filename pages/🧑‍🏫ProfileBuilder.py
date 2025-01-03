@@ -50,17 +50,15 @@ from util.login import  add_user, authenticate_user, is_valid_password,listofuse
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
-from google.cloud import firestore
 import time
+
 
 if not firebase_admin._apps:
     cred = credentials.Certificate("a.json")
     firebase_admin.initialize_app(cred, {
         'databaseURL': "https://profile-data-dde0a-default-rtdb.firebaseio.com/"
     })
-    db = firestore.client() 
-# Replace with your Firebase project credentials (service account key JSON file)
-
+  
 global s
 k=0
 api_key=os.getenv("API-KEY")
