@@ -1,3 +1,5 @@
+firebase-admin
+google-cloud-firestore
 SpeechRecognition
 google-generativeai
 python-dotenv
@@ -41,5 +43,3 @@ flask
 flask-socketio
 streamlit_chat
 mysql-connector-python
-firebase-admin
-google-cloud-firestore
