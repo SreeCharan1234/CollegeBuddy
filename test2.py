@@ -36,25 +36,31 @@ def create_user(username, password, codechef_id, leet_id, github_id, codeforces_
         print(f"Error creating user: {e}")
         return None
 
-def insert_users_from_input(users_data):
-    """Inserts users into Firebase from user input data."""
-    if users_data is None:
-        return  # nothing to insert
-    for user_data in users_data:
-        try:
-            username, password, codechef_id, leet_id, github_id, codeforces_id, college, category = user_data
-            create_user(username, password, codechef_id, leet_id, github_id, codeforces_id, college, category)
-        except ValueError:
-            print(f"Invalid user data: {user_data}. Skipping.")
-        except Exception as e:
-            print(f"Error inserting user: {e}. Skipping.")
+def listofuser(db):
+    """Retrieves all users from Firebase and returns a list of usernames."""
+    try:
+        users_ref = db.reference("users")
+        users_snapshot = users_ref.get()
 
+        if users_snapshot:
+            user_data = []
+            for user_id, user_info in users_snapshot.items():  # Iterate through user IDs and data
+                user_data.append(user_info["username"])  # Append username to the list
+            return user_data
+        else:
+            print("No users found in the database.")
+            return []  # Return an empty list if no users are found
+
+    except Exception as e:
+        print(f"Error retrieving users: {e}")
+        return []  
+print(listofuser(db))
 # if __name__ == "__main__":
 #     #users_input = get_user_input()
 #     insert_users_from_input([["TUHID", "Sree@1234", "sreecharan9484", "sreecharan9484", "SreeCharan1234", "sreecharan9484","LPU","Student"]])
 #     print("Finished inserting users.")
 
-create_user("a","a","a","a","a","a","a","a")
+#create_user("a","a","a","a","a","a","a","a")
 def list_profiles(username): #rt for real time database
     """Retrieves a user profile from the Realtime Database based on username."""
     try:
@@ -73,7 +79,7 @@ def list_profiles(username): #rt for real time database
     except Exception as e:
         print(f"Error retrieving profile: {e}")
         return None
-    
+  
 def authenticate_user(username, password):
     """Authenticates a user against Firebase."""
     try:

@@ -54,32 +54,6 @@ def is_valid_password(password):
         return "Password must contain at least one number."
     return None
 
-def listofuser():
-    try:
-        # Connect to the SQLite database (or create it if it doesn't exist)
-        conn = sqlite3.connect('user_data.db')  # Replace 'your_database.db' with your desired database name
-        cursor = conn.cursor()
-
-        # Execute the query
-        cursor.execute("SELECT username FROM users")
-
-        # Fetch all results
-        results = cursor.fetchall()
-
-        user_data = []
-        for name in results:
-            user_data.append(name[0]) # More efficient than list concatenation
-
-        return user_data
-
-    except sqlite3.Error as e:
-        print(f"SQLite error: {e}")
-        return [] # Return an empty list in case of an error
-
-    finally:
-        if conn:
-            conn.close() # Ensure the connection is always closed
-
 
 def list_profiles(username,db): #rt for real time database
     """Retrieves a user profile from the Realtime Database based on username."""
