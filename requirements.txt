@@ -42,3 +42,4 @@ flask-socketio
 streamlit_chat
 mysql-connector-python
 firebase-admin
+google-cloud-firestore
