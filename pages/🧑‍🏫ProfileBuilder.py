@@ -189,8 +189,8 @@ if selected == "Register":
 if selected == "Dashboard":
 
     link="https://lottie.host/02515adf-e5f1-41c8-ab4f-8d07af1dcfb8/30KYw8Ui2q.json"
-    Username = "Sreecharan9484"
-    cUsername="Sreecharan9484"
+    Username = "krishkumar7727"
+    cUsername="krishkumar7727"
     st.session_state["Username"] = Username
     st.session_state["cUsername"]= cUsername
     l=load_lottieurl(link)
