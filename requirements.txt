@@ -1,6 +1,4 @@
 firebase-admin
-portaudio19-dev
-pyaudio
 google-cloud-firestore
 SpeechRecognition
 google-generativeai
