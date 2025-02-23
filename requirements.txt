@@ -1,5 +1,4 @@
 firebase-admin
-
 google-cloud-firestore
 SpeechRecognition
 google-generativeai
