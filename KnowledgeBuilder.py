@@ -485,16 +485,7 @@ if selected == "Road Map":
                 Give :
                     some likes of youtube  form which take take refreese  both englis and hindi channeld first engilsh and second hindi 
             3. Give :
-                some webstie link where he can read rome about the pyhton conetps
-            4.
-                give:
-                    some books name where he can study 
-            5.
-                any addition imformation you give which will be help full for the studes 
-            6.
-            Final review:
-
-            At the end give a final review addition tips to while following this road Map. 
+                some webstie link where he can read rome about the {End_Gole} conetps
             """
             s = role + instructions 
             
