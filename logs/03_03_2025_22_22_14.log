@@ -31,3 +31,6 @@
 [2025-03-03 23:11:22,520] 134 langchain_huggingface.llms.huggingface_endpoint - WARNING - WARNING! token is not default parameter.
                     token was transferred to model_kwargs.
                     Please make sure that token is what you intended.
+[2025-03-03 23:11:32,524] 134 langchain_huggingface.llms.huggingface_endpoint - WARNING - WARNING! token is not default parameter.
+                    token was transferred to model_kwargs.
+                    Please make sure that token is what you intended.

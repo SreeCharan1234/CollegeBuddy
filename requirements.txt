@@ -12,6 +12,8 @@ pillow
 google.generativeai
 IPython
 streamlit-lottie
+transformers
+huggingface_hub
 requests
 youtube-transcript-api
 streamlit-option-menu
