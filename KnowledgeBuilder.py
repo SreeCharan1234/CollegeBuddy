@@ -38,10 +38,10 @@ global s
 k=0
 import os
 from langchain_huggingface import HuggingFaceEndpoint
-sec_key="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"
-os.environ["HUGGINGFACEHUB_API_TOKEN"]=sec_key
+
+os.environ["HUGGINGFACEHUB_API_TOKEN"]=os.getenv("HUGGINGFACEHUB_API_TOKEN")
 repo_id="mistralai/Mistral-7B-Instruct-v0.2"
-llm=HuggingFaceEndpoint(repo_id=repo_id,temperature=0.7,token=sec_key)
+llm=HuggingFaceEndpoint(repo_id=repo_id,temperature=0.7,token=os.getenv("HUGGINGFACEHUB_API_TOKEN"))
 genai.configure(api_key=os.getenv("API-KEY"))
 t= ["Python", "Java", "C++", "JavaScript", "Ruby", "PHP", "Swift", "Kotlin", 
     "C#", "Go", "R", "TypeScript", "Scala", "Perl", "Objective-C", "Dart", 
