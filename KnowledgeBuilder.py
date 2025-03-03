@@ -36,6 +36,12 @@ import time
 
 global s
 k=0
+import os
+from langchain_huggingface import HuggingFaceEndpoint
+sec_key="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"
+os.environ["HUGGINGFACEHUB_API_TOKEN"]=sec_key
+repo_id="mistralai/Mistral-7B-Instruct-v0.2"
+llm=HuggingFaceEndpoint(repo_id=repo_id,temperature=0.7,token=sec_key)
 genai.configure(api_key=os.getenv("API-KEY"))
 t= ["Python", "Java", "C++", "JavaScript", "Ruby", "PHP", "Swift", "Kotlin", 
     "C#", "Go", "R", "TypeScript", "Scala", "Perl", "Objective-C", "Dart", 
@@ -490,7 +496,7 @@ if selected == "Road Map":
             """
             s = role + instructions 
             
-            s=get_gemini_response(s)
+            s=llm.invoke(s)
             st.write(s)
 
 if selected=="Code Editor": 
@@ -552,16 +558,16 @@ sum_of_list([5,3,4,4])"""
             with col1:
                 if st.button("Debug My code ",type="primary", help="Debug your code",use_container_width=True):
                     s="Debug  my code  "+str(editor_content)+"explain where I have done wrong and correcty and write the whole correct code again "
-                    s=get_gemini_response(s)
+                    s=llm.invoke(s)
                     #st.write(s)                   
             with col2:
                 if st.button("Explain whole Code",type="primary", help="Explain the Code",use_container_width=True):
                     s="Explain  my code  "+str(editor_content)+"explain where I have done wrong and exaplin like you are explain to a noob"
-                    s=get_gemini_response(s)        
+                    s=llm.invoke(s)        
             with col3:
                 if st.button("Time Complexity",type="primary", help="Time complexity",use_container_width=True):
                     s="Tell the time COmplextiy   "+str(editor_content)+"explain who the time complixity is correct "
-                    s=get_gemini_response(s)
+                    s=llm.invoke(s)
                     #st.write(s)
             with col4:
                 if st.button("Diagram",type="primary", help="Veiw the diagram",use_container_width=True):
@@ -574,7 +580,7 @@ sum_of_list([5,3,4,4])"""
                 p=st.multiselect("Convert Code into", ["C++","Python","Java"], [], placeholder="Choose Language")
                 if p:
                     s="convert  the  whole code into the language "+str(p)+str(editor_content)+"explain"
-                    s=get_gemini_response(s)
+                    s=llm.invoke(s)
         
         with st.container(border=True): 
             col1, col2 = st.columns([6,1])  
