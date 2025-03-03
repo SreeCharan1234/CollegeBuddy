@@ -31,6 +31,7 @@ import io
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
 from youtube_transcript_api import YouTubeTranscriptApi
 from util.common import get_gemini_response,get_leetcode_data,get_gemini_response1,load_lottieurl
+from util.simplyfy import syntax_highlight,generate_ast,generate_flowchart
 import time
 
 global s
@@ -545,7 +546,9 @@ sum_of_list([5,3,4,4])"""
             else:
                 st.write("Unsupported language selected.")
         with st.container(border=True):  
-            col1, col2, col3, col4= st.columns([1,1,1,2])
+            
+            flowchart=0
+            col1, col2, col3, col4,col5= st.columns([1,1,1,1,1.5])
             with col1:
                 if st.button("Debug My code ",type="primary", help="Debug your code",use_container_width=True):
                     s="Debug  my code  "+str(editor_content)+"explain where I have done wrong and correcty and write the whole correct code again "
@@ -561,6 +564,12 @@ sum_of_list([5,3,4,4])"""
                     s=get_gemini_response(s)
                     #st.write(s)
             with col4:
+                if st.button("Diagram",type="primary", help="Veiw the diagram",use_container_width=True):
+                    flowchart = generate_flowchart(str(editor_content))
+                    
+
+                    #st.write(s)
+            with col5:
 
                 p=st.multiselect("Convert Code into", ["C++","Python","Java"], [], placeholder="Choose Language")
                 if p:
@@ -609,7 +618,10 @@ sum_of_list([5,3,4,4])"""
         editor_content = st_ace(value=str(s), language='python', theme='monokai', keybinding='vscode', font_size=14)
     
     st.write(s)
-
+            
+    if flowchart:
+        st.graphviz_chart(flowchart)
+    
 if selected== "Mock Interview":
     main()
 
