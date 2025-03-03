@@ -1,81 +1,73 @@
+## **Project Name - Study Buddy**
 
-## Project Name-  Study Buddy
+## **Empowering Computer Science Students with AI-Driven Learning & Career Tools**
 
-## Empowering Computer Science Students with Comprehensive Tools for Knowledge and Career Growth.
+## **🚀 The Problem It Solves**
 
-## The problem it Solves:-
+Study Buddy is an AI-powered platform that revolutionizes self-paced learning and career development for computer science students. It consolidates structured roadmaps, personalized assessments, and debugging tools while integrating competitive coding profiles and AI-based analytics. The platform ensures a seamless transition from learning to job readiness through intelligent skill assessments, real-time feedback, and AI-driven career recommendations.
 
-> Study Buddy bridges the gap for computer science students by offering a single platform to enhance learning and career development. It simplifies access to structured roadmaps, personalized tests, and debugging tools, making self-paced learning more efficient. Additionally, it consolidates profiles from competitive platforms, provides detailed analytics, enables skill comparisons, and evaluates LinkedIn profiles against job requirements. This ensures students can focus on both academic and professional growth while staying organized and informed.
+## **🧠 AI-Powered Features & Technologies**
 
+### **1. Knowledge Builder**
 
+- **AI-Generated Roadmaps**: Dynamic learning paths tailored using NLP-based recommendation engines.
+- **Test Yourself**: Auto-generated MCQs from YouTube lecture transcripts using LLaMA 2.0-powered text generation and NLP-based summarization.
+- **AI Proctored Testing**: Uses computer vision models (OpenCV + MediaPipe) for real-time monitoring.
+- **Smart Code Editor**: Debugging with AST (Abstract Syntax Tree) parsing, AI-based error detection, and time complexity analysis.
+- **Voice-Based Feedback Integration**: Uses Speech-to-Text models (Whisper, Wav2Vec) for interactive learning.
 
-## 🚀 Project Overview:-
+### **2. Profile Builder**
 
-> Study Buddy is an AI-powered platform designed to enhance learning and career development for computer science students. The platform combines educational resources, personalized tests, and professional growth tools to create a holistic and interactive experience.
-
-> Key Features:-
-
-## 1. Knowledge Builder:-
-
-> Roadmaps: Detailed guides for academic and professional development.
-
-> Test Yourself: Auto-generated MCQs using YouTube lecture links, with AI-powered proctored testing.
-
-> Code Editor: Debugging tools, time complexity analysis, and voice-based feedback integration.
-
-
-
-##   2. Profile Builder:-
-
-> Integrated Dashboards: Visualize data from platforms like LeetCode, CodeChef, GitHub, etc., with charts and graphs.
-
-> 1 vs 1 Comparison: Compare programming skills and achievements with peers.
-
-> LinkedIn Profile Analyzer: Evaluate LinkedIn profiles against job requirements for actionable feedback.
+- **Integrated Dashboards**: Data aggregation from LeetCode, CodeChef, GitHub, etc., with interactive visualizations using Plotly.
+- **Skill Benchmarking (1 vs 1 Comparison)**: AI-driven similarity scoring using cosine similarity on programming profiles.
+- **LinkedIn Profile Analyzer**: Uses RAG (Retrieval-Augmented Generation) with LangChain to evaluate LinkedIn profiles against job descriptions.
+- **Automated Resume Building**: Uses GPT-based text summarization and Named Entity Recognition (NER) to extract relevant skills.
 
 ---
 
-## 🛠️ Tech Stacks:-
+## **🛠️ Tech Stack & AI Models**
 
-Programming Languages:- 
+### **Programming Languages**
+- **Python**: Backend logic, AI/ML model deployment, and data processing.
+- **JavaScript, HTML, CSS**: Frontend development for a dynamic, interactive UI.
 
-> Python: For backend logic, AI/ML model integration, and data processing.
-> JavaScript, HTML, CSS: For building dynamic, interactive web components and UI.
+### **Frameworks & Libraries**
+- **Streamlit**: Interactive AI-driven web application.
+- **LangChain**: Document splitting, prompt engineering, and retrieval-based learning assistance.
+- **PyTorch & Hugging Face Transformers**: NLP tasks including summarization, question answering, and information retrieval.
+- **OpenCV & MediaPipe**: Face detection for proctoring and skill verification.
+- **SpeechRecognition, Wav2Vec, Whisper**: Voice-based interaction and learning.
+- **pdf2Image**: Extracts text and images from study material PDFs.
+- **Pandas, NumPy**: Data processing for analytics.
+- **Matplotlib, Seaborn, Plotly**: Visualizations for dashboards and insights.
+- **BeautifulSoup, Selenium**: Web scraping for LinkedIn and job postings.
 
+### **APIs & Integrations**
+- **YouTube API**: Fetches lecture videos for AI-based test generation.
+- **LinkedIn API**: Extracts professional data for profile analysis.
+- **Google Generative AI API**: Enables chatbot and learning assistant functionalities.
+- **OpenAI GPT & LLaMA 2.0**: Text generation for personalized learning paths.
 
-## Frameworks and Libraries:-
+### **Other AI-Driven Tools**
+- **RAG-based Search (Retrieval-Augmented Generation)**: Enhances document-based queries for better content recommendations.
+- **Vector Embeddings (FAISS, Pinecone)**: Improves knowledge retrieval for personalized study suggestions.
+- **OCR (Tesseract, Azure Cognitive Services)**: Extracts text from images and PDFs for AI-based document processing.
 
->Streamlit: Interactive web-based application.
->LangChain: For natural language processing and task automation.
->SpeechRecognition, pdf2Image: Convert speech to text and process PDF study materials.
->Pandas, NumPy: Data manipulation and analysis.
->Matplotlib, Seaborn, Plotly: Visualization of dashboards, charts, and graphs.
->Hugging Face, PyTorch: NLP models and deep learning.
->BeautifulSoup, Selenium: Web scraping for data extraction from LinkedIn, job postings, etc.
+---
 
+## **📈 How Study Buddy Leverages AI & Personalization**
 
-## APIs and Integrations:-
+Study Buddy integrates cutting-edge AI and machine learning to create an adaptive, personalized learning experience. It utilizes NLP-powered test generation, AI-based coding assistance, skill benchmarking, and job-matching algorithms. From automated roadmaps to real-time LinkedIn analysis, Study Buddy ensures students receive AI-driven insights to accelerate their learning and career growth.
 
-> YouTube API: Fetch lecture videos for generating test content.
+---
 
-> LinkedIn API: Profile data for resume building and job recommendations.
+## **🎥 Video Demo**
 
-> Google Generative AI API: Chatbot and learning assistant support.
+🔗 [Watch Now](https://www.youtube.com/watch?v=hV0Qfu_90WM)
 
+---
 
-## Other Tools:-
-
->Datetime, OS, Pathlib: Managing system files and time-based inputs.
-
->Base64: Encoding and decoding image or file data.
-
-
-# 📈 How It Fits into AI and Personalization:-
-
-Study Buddy utilizes AI-powered tools for an adaptive user experience. From personalized learning paths and test generation to LinkedIn profile analysis and skill comparison, the platform provides a deeply customized approach to learning and career growth. AI tools like LangChain, speech-to-text, and web scraping ensure that resources and recommendations align perfectly with each student's unique needs
-
-
-# video Link :- https://www.youtube.com/watch?v=hV0Qfu_90WM
+**Empower your learning with AI. Elevate your career with Study Buddy!** 🚀
 
 
 # Glimpse of the Project:-
