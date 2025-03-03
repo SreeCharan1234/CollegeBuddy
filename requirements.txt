@@ -6,6 +6,7 @@ python-dotenv
 streamlit
 streamlit-ace
 streamlit-extras
+langchain-huggingface
 pdf2image
 gtts
 pillow
