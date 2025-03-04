@@ -1,4 +1,4 @@
-## **Project Name - Study Buddy**
+## **Project Name - Study-Buddy**
 
 ## **Empowering Computer Science Students with AI-Driven Learning & Career Tools**
 
