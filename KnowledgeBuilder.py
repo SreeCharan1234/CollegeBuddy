@@ -618,7 +618,7 @@ sum_of_list([5,3,4,4])"""
         st.success(f"You said: {text_input}")
         s="here is python code "+str(editor_content)+"so please do the change like this "+text_input+"and give me the wole answer in python only dont give me it in any english owrd explin it all in comments only "
 
-        s=get_gemini_response(s)
+        s=llm.invoke(s)
         s=s[9:-3]
         
         editor_content = st_ace(value=str(s), language='python', theme='monokai', keybinding='vscode', font_size=14)
