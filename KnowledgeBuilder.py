@@ -447,7 +447,7 @@ if 'questions' not in st.session_state:
     st.session_state.questions = []
 
 if selected == "Road Map":
-    example()
+    # exa/mple()
     link="https://lottie.host/76509b4e-81b1-4877-9974-1fa506b294b1/ja7bfvhaEb.json"
     l=load_lottieurl(link)
     col1, col2 = st.columns([1,9])  # Create two columns
