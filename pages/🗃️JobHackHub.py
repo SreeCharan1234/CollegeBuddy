@@ -136,8 +136,33 @@ def hactkon():
 selected = streamlit_menu(example=EXAMPLE_NO)
 if 'questions' not in st.session_state:
     st.session_state.questions = []
+def hackathons():
+    # Replace real-time data fetching with hardcoded sample data
+    hackathons = [
+        {
+            'name': 'Hackathon Alpha',
+            'description': 'A beginner-friendly hackathon to kickstart your coding journey.',
+            'mode': 'Online',
+            'image_url': 'https://via.placeholder.com/150'
+        },
+        {
+            'name': 'Hackathon Beta',
+            'description': 'An intermediate-level hackathon with exciting challenges.',
+            'mode': 'Offline',
+            'image_url': 'https://via.placeholder.com/150'
+        },
+        {
+            'name': 'Hackathon Gamma',
+            'description': 'A hackathon for advanced coders to showcase their skills.',
+            'mode': 'Hybrid',
+            'image_url': 'https://via.placeholder.com/150'
+        }
+    ]
+    return hackathons
+
 if selected == "Hackthons":
     hackathons=hactkon()
+    hackathons=hackathons()
     st.title("Hackathons Listings")
 
     # Create columns for each hackathon
