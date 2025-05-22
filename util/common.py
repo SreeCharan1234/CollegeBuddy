@@ -69,7 +69,7 @@ def get_gemini_response1(input,pdf_cotent,prompt):
     response=model.generate_content([input,pdf_content[0],prompt])
     return response.text
 def get_gemini_response(question):
-    model = genai.GenerativeModel('gemini-2.0-pro-exp-02-05')
+    model = genai.GenerativeModel('gemini-1.5-flash')
     response = model.generate_content(question)
     return response.text
 def load_lottieurl(url: str):
