@@ -9,13 +9,9 @@ from src.mcqgenerator.logger import logging
 import langchain_google_genai as genai
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, SequentialChain
-
 load_dotenv()
 api_key='AIzaSyAWDUMXlv5JWhQOqDuBHBu01WijtD0igBE'
-genai.configure(api_key=api_key)
-
-llm = genai.ChatGoogleGenerativeAI(google_api_key=api_key, model="gemini-1.5-pro")
-
+llm = genai.ChatGoogleGenerativeAI(google_api_key=api_key, model="gemini-1.5-flash")
 template="""
 Text:{text}
 You are an expert MCQ maker. Given the above text, it is your job to \
@@ -27,12 +23,10 @@ Ensure to make {number} MCQs
 {response_json}
 
 """
-
 quiz_generation_prompt = PromptTemplate(
     input_variables=["text", "number", "subject", "tone", "response_json"],
     template=template
     )
-
 quiz_chain = LLMChain(llm=llm, prompt=quiz_generation_prompt, output_key="quiz", verbose=True)
 
 template2="""
