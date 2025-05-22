@@ -42,7 +42,9 @@ from langchain_huggingface import HuggingFaceEndpoint
 os.environ["HUGGINGFACEHUB_API_TOKEN"]=os.getenv("HUGGINGFACEHUB_API_TOKEN")
 repo_id="mistralai/Mistral-7B-Instruct-v0.2"
 llm=HuggingFaceEndpoint(repo_id=repo_id,temperature=0.7,token=os.getenv("HUGGINGFACEHUB_API_TOKEN"))
-genai.configure(api_key=os.getenv("API-KEY"))
+api_key='AIzaSyAWDUMXlv5JWhQOqDuBHBu01WijtD0igBE'
+genai.configure(api_key=api_key)
+
 t= ["Python", "Java", "C++", "JavaScript", "Ruby", "PHP", "Swift", "Kotlin", 
     "C#", "Go", "R", "TypeScript", "Scala", "Perl", "Objective-C", "Dart", 
     "Rust", "Haskell", "MATLAB", "SQL", "HTML/CSS", "React", "Angular", "Vue.js", 
