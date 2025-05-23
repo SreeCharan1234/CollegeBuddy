@@ -1,7 +1,7 @@
 ## **Project Name - Study-Buddy**
 
 ## **Empowering Computer Science Students with AI-Driven Learning & Career Tools**
-
+## docs : https://shorturl.at/5tM1v
 ## **🚀 The Problem It Solves**
 
 Study Buddy is an AI-powered platform that revolutionizes self-paced learning and career development for computer science students. It consolidates structured roadmaps, personalized assessments, and debugging tools while integrating competitive coding profiles and AI-based analytics. The platform ensures a seamless transition from learning to job readiness through intelligent skill assessments, real-time feedback, and AI-driven career recommendations.
